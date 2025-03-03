@@ -1,170 +1,136 @@
 package pcd.part1.abstractSim;
 
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.pattern.Patterns;
+import pcd.part1.actor.SimulationActor;
+import pcd.part1.actor.RoadEnvActor;
+import pcd.part1.model.Message;
+import scala.concurrent.Await;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-/**
- * Base class for defining concrete simulations
- *  
- */
 public abstract class AbstractSimulation {
-
-	/* environment of the simulation */
-	private AbstractEnvironment env;
-	
-	/* list of the agents */
-	private List<AbstractAgent> agents;
-	
-	/* simulation listeners */
-	private List<SimulationListener> listeners;
+	protected ActorSystem system;
 
 	/* logical time step */
 	private int dt;
-	
+
 	/* initial logical time */
 	private int t0;
 
-	/* in the case of sync with wall-time */
-	private boolean toBeInSyncWithWallTime;
-	private int nStepsPerSec;
-	
-	/* for time statistics*/
-	private long currentWallTime;
-	private long startWallTime;
-	private long endWallTime;
-	private long averageTimePerStep;
+	protected int numCars;
 
-
-	protected AbstractSimulation() {
-		agents = new ArrayList<AbstractAgent>();
-		listeners = new ArrayList<SimulationListener>();
-		toBeInSyncWithWallTime = false;
+	protected AbstractSimulation(int numCar){
+		system = ActorSystem.create("TrafficSimulation");
+		system.actorOf(Props.create(RoadEnvActor.class, "RoadEnv"), "roadenv");
+		system.actorOf(Props.create(SimulationActor.class), "sim");
+		this.numCars = numCar;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Method used to configure the simulation, specifying env and agents
-	 * 
+	 *
 	 */
 	protected abstract void setup();
-	
+
 	/**
 	 * Method running the simulation for a number of steps,
 	 * using a sequential approach
-	 * 
-	 * @param numSteps
+	 *
+	 * @param numSteps number of steps to run
 	 */
-	public void run(int numSteps) {		
+	public void run(int numSteps) {
 
-		startWallTime = System.currentTimeMillis();
+		system.actorSelection("/user/sim").tell(new Message("set-start", List.of(numSteps)), ActorRef.noSender());
 
 		/* initialize the env and the agents inside */
 		int t = t0;
 
-		env.init();
-		for (var a: agents) {
-			a.init(env);
+		system.actorSelection("/user/roadenv").tell(new Message("init", List.of(numSteps, numCars)), ActorRef.noSender());
+		for (int i = 0; i < 4; i++) {
+			system.actorSelection("/user/car-" + i).tell(new Message("init", null), ActorRef.noSender());
 		}
 
-		this.notifyReset(t, agents, env);
-		
-		long timePerStep = 0;
-		int nSteps = 0;
-		
-		while (nSteps < numSteps) {
+		this.notifyReset(t);
 
-			currentWallTime = System.currentTimeMillis();
-		
-			/* make a step */
-			
-			env.step(dt);
-			
-			/* clean the submitted actions */
-			
-			env.cleanActions();
-			
-			/* ask each agent to make a step */
-			
-			for (var agent: agents) {
-				agent.step(dt);
-			}
-			t += dt;
-						
-			/* process actions submitted to the environment */
-			
-			env.processActions();
-			
-			notifyNewStep(t, agents, env);
-
-			nSteps++;			
-			timePerStep += System.currentTimeMillis() - currentWallTime;
-			
-			if (toBeInSyncWithWallTime) {
-				syncWithWallTime();
-			}
-		}	
-		
-		endWallTime = System.currentTimeMillis();
-		this.averageTimePerStep = timePerStep / numSteps;
-		
+		/* make a step */
+		system.actorSelection("/user/roadenv").tell(new Message("step", List.of(dt)), ActorRef.noSender());
 	}
-	
+
 	public long getSimulationDuration() {
-		return endWallTime - startWallTime;
+		long dur;
+		Future<Object> future = Patterns.ask(system.actorSelection("/user/sim"), new Message("get-duration", List.of()), 1000);
+		try {
+			dur = (long) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
+		} catch (TimeoutException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		return dur;
 	}
-	
+
 	public long getAverageTimePerCycle() {
-		return averageTimePerStep;
+		long avg;
+		Future<Object> future = Patterns.ask(system.actorSelection("/user/sim"), new Message("get-average-time-per-cycle", List.of()), 1000);
+		try {
+			avg = (long) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
+		} catch (TimeoutException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		system.actorSelection("/user/sim").tell(new Message("get-average-time-per-cycle", List.of()), ActorRef.noSender());
+		return avg;
 	}
-	
+
 	/* methods for configuring the simulation */
-	
+
 	protected void setupTimings(int t0, int dt) {
 		this.dt = dt;
 		this.t0 = t0;
 	}
-	
+
 	protected void syncWithTime(int nCyclesPerSec) {
-		this.toBeInSyncWithWallTime = true;
-		this.nStepsPerSec = nCyclesPerSec;
-	}
-		
-	protected void setupEnvironment(AbstractEnvironment env) {
-		this.env = env;
+		system.actorSelection("/user/sim").tell(new Message("sync-with-time", List.of(nCyclesPerSec)), ActorRef.noSender());
 	}
 
-	protected void addAgent(AbstractAgent agent) {
-		agents.add(agent);
-	}
-	
 	/* methods for listeners */
-	
+
 	public void addSimulationListener(SimulationListener l) {
-		this.listeners.add(l);
-	}
-	
-	private void notifyReset(int t0, List<AbstractAgent> agents, AbstractEnvironment env) {
-		for (var l: listeners) {
-			l.notifyInit(t0, agents, env);
-		}
+		system.actorSelection("/user/sim").tell(new Message("add-listener", List.of(l)), ActorRef.noSender());
 	}
 
-	private void notifyNewStep(int t, List<AbstractAgent> agents, AbstractEnvironment env) {
-		for (var l: listeners) {
-			l.notifyStepDone(t, agents, env);
-		}
+	private void notifyReset(int t0) {
+		system.actorSelection("/user/sim").tell(new Message("reset", List.of(t0)), ActorRef.noSender());
 	}
 
-	/* method to sync with wall time at a specified step rate */
-	
-	private void syncWithWallTime() {
+	public int getNumCars() {
+		return numCars;
+	}
+
+	public boolean isCompleted(){
+		Future<Object> future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("is-completed", List.of()), 1000);
 		try {
-			long newWallTime = System.currentTimeMillis();
-			long delay = 1000 / this.nStepsPerSec;
-			long wallTimeDT = newWallTime - currentWallTime;
-			if (wallTimeDT < delay) {
-				Thread.sleep(delay - wallTimeDT);
-			}
-		} catch (Exception ex) {}		
+			return (boolean) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
+		} catch (TimeoutException | InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void shutdown() {
+		system.terminate();
+	}
+
+	public void pause() {
+		system.actorSelection("/user/sim").tell(new Message("pause", List.of()), ActorRef.noSender());
+	}
+
+	public void resume() {
+		system.actorSelection("/user/sim").tell(new Message("resume", List.of(dt, system)), ActorRef.noSender());
 	}
 }
