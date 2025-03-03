@@ -46,7 +46,7 @@ public class RoadsEnv extends AbstractEnvironment {
 	}
 	
 	public void registerNewCar(CarAgent car, Road road, double pos) {
-		registeredCars.put(car.getId(), new CarAgentInfo(car, road, pos));
+		//registeredCars.put(car.getId(), new CarAgentInfo(car, road, pos));
 	}
 
 	public Road createRoad(P2d p0, P2d p1) {
