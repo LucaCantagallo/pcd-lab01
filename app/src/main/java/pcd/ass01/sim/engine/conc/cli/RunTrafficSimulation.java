@@ -17,11 +17,11 @@ public class RunTrafficSimulation {
 
 		int nWorkers = Runtime.getRuntime().availableProcessors() + 1;
 		
-		// var simulationModel = new TrafficSimulationSingleRoadTwoCars();
+		var simulationModel = new TrafficSimulationSingleRoadTwoCars();
 		// var simulationModel = new TrafficSimulationSingleRoadSeveralCars();
 		// var simulationModel = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 
-		var simulationModel = new TrafficSimulationWithCrossRoads();
+		//var simulationModel = new TrafficSimulationWithCrossRoads();
 		simulationModel.init();
 		
 		Flag stopFlag = new Flag();
