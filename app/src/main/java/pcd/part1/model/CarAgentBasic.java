@@ -11,7 +11,7 @@ import java.util.Optional;
  * If there are no cars or the car is far, accelerate up to a constant speed
  * 
  */
-public class CarBasic extends AbstractCar {
+public class CarAgentBasic extends CarAgent {
 
 	private static final int CAR_NEAR_DIST = 15;
 	private static final int CAR_FAR_ENOUGH_DIST = 20;
@@ -26,12 +26,12 @@ public class CarBasic extends AbstractCar {
 
 	private int waitingTime;
 	
-	public CarBasic(String id, RoadsEnv env, Road road,
-                    double initialPos,
-                    double acc,
-                    double dec,
-                    double vmax) {
-		super(id, road, initialPos, acc, dec, vmax);
+	public CarAgentBasic(String id, RoadsEnv env, Road road,
+                         double initialPos,
+                         double acc,
+                         double dec,
+                         double vmax) {
+		super(id, env, road, initialPos, acc, dec, vmax);
 		state = CarAgentState.STOPPED;
 	}
 	
@@ -89,7 +89,7 @@ public class CarBasic extends AbstractCar {
 	/* aux methods */
 		
 	private boolean detectedNearCar() {
-		Optional<AbstractCar> car = currentPercept.nearestCarInFront();
+		Optional<CarAgentInfo> car = currentPercept.nearestCarInFront();
 		if (car.isEmpty()) {
 			return false;
 		} else {
@@ -100,7 +100,7 @@ public class CarBasic extends AbstractCar {
 	
 
 	private boolean carFarEnough() {
-		Optional<AbstractCar> car = currentPercept.nearestCarInFront();
+		Optional<CarAgentInfo> car = currentPercept.nearestCarInFront();
 		if (car.isEmpty()) {
 			return true;
 		} else {

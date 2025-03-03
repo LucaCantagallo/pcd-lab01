@@ -3,11 +3,8 @@ package pcd.part1.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 
- * Modeling a road, part of the environment
- * 
- */
+
+
 public class Road {
 
 	private double len;

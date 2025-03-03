@@ -1,8 +1,7 @@
 package pcd.part1.model;
 
 /**
- * 
- * Modelling a traffic light
+ * Class modeling the structure and behaviour of a traffic light
  *  
  */
 public class TrafficLight {

@@ -8,10 +8,10 @@ import java.util.Optional;
 
 /**
  * 
- * Base class for modeling a car in the traffic environment
+ * Base class modeling the skeleton of an agent modeling a car in the traffic environment
  * 
  */
-public abstract class AbstractCar extends AbstractAgent {
+public abstract class CarAgent extends AbstractAgent {
 	
 	/* car model */
 	protected double maxSpeed;		
@@ -23,20 +23,17 @@ public abstract class AbstractCar extends AbstractAgent {
 	protected CarPercept currentPercept;
 	protected Optional<Action> selectedAction;
 	
-	protected Road road;
-	protected double currentPos;
 	
-	public AbstractCar(String id, Road road,
-			double initialPos, 
-			double acc, 
-			double dec,
-			double vmax) {
+	public CarAgent(String id, RoadsEnv env, Road road,
+                    double initialPos,
+                    double acc,
+                    double dec,
+                    double vmax) {
 		super(id);
 		this.acceleration = acc;
 		this.deceleration = dec;
 		this.maxSpeed = vmax;
-		this.road = road;
-		this.currentPos = initialPos;
+		env.registerNewCar(this, road, initialPos);
 	}
 
 	/**
@@ -60,7 +57,7 @@ public abstract class AbstractCar extends AbstractAgent {
 		/* act */
 		
 		if (selectedAction.isPresent()) {
-			env.submitAction(getId(),selectedAction.get());
+			env.submitAction(selectedAction.get());
 		}
 	}
 	
@@ -80,16 +77,5 @@ public abstract class AbstractCar extends AbstractAgent {
 		System.out.println("[CAR " + this.getId() + "] " + msg);
 	}
 
-	public double getPos() {
-		return currentPos;
-	}
-	
-	public Road getRoad() {
-		return road;
-	}
-	
-	public void updatePos(double newPos) {
-		this.currentPos = newPos;
-	}
 	
 }

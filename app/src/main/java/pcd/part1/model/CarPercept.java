@@ -13,4 +13,4 @@ import java.util.Optional;
  * - nearest semaphore, if present (distance)
  * 
  */
-public record CarPercept(double roadPos, Optional<AbstractCar> nearestCarInFront, Optional<TrafficLightInfo> nearestSem) implements Percept { }
+public record CarPercept(double roadPos, Optional<CarAgentInfo> nearestCarInFront, Optional<TrafficLightInfo> nearestSem) implements Percept { }
