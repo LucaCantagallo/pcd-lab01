@@ -1,9 +1,9 @@
 package pcd.part1.simulation;
 
-import pcd.ass01.simseq.version1.AbstractAgent;
-import pcd.ass01.simseq.version1.AbstractEnvironment;
-import pcd.ass01.simseq.version1.SimulationListener;
-import pcd.ass01.simtrafficbase.version1.*;
+import pcd.part1.abstractSim.AbstractAgent;
+import pcd.part1.abstractSim.AbstractEnvironment;
+import pcd.part1.abstractSim.SimulationListener;
+import pcd.part1.model.*;
 
 import javax.swing.*;
 import java.awt.*;

@@ -42,7 +42,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "pcd.ass01.sim.engine.conc.cli.RunTrafficSimulation"
+    mainClass = "pcd.part1.main.RunTrafficSimulation"
 }
 
 tasks.named<Test>("test") {
