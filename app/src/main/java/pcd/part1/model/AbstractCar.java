@@ -1,8 +1,8 @@
 package pcd.part1.model;
 
-import pcd.ass01.sim.model.AbstractAgent;
-import pcd.ass01.sim.model.AbstractEnvironment;
-import pcd.ass01.sim.model.Action;
+import pcd.part1.abstractSim.AbstractAgent;
+import pcd.part1.abstractSim.AbstractEnvironment;
+import pcd.part1.abstractSim.Action;
 
 import java.util.Optional;
 

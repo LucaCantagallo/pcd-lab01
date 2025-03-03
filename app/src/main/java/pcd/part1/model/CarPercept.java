@@ -1,6 +1,6 @@
 package pcd.part1.model;
 
-import pcd.ass01.sim.model.Percept;
+import pcd.part1.abstractSim.Percept;
 
 import java.util.Optional;
 
