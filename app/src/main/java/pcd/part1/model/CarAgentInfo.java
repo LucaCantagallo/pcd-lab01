@@ -1,12 +1,14 @@
 package pcd.part1.model;
 
+import pcd.part1.actor.CarAgentActor;
+
 public  class CarAgentInfo {
 
-	private CarAgent car;
+	private CarAgentActor car;
 	private double pos;
 	private Road road;
 	
-	public CarAgentInfo(CarAgent car, Road road, double pos) {
+	public CarAgentInfo(CarAgentActor car, Road road, double pos) {
 		this.car = car;
 		this.road = road;
 		this.pos = pos;
@@ -20,7 +22,7 @@ public  class CarAgentInfo {
 		this.pos = pos;
 	}
 	
-	public CarAgent getCar() {
+	public CarAgentActor getCar() {
 		return car;
 	}	
 	

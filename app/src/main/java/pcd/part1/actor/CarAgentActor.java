@@ -49,7 +49,7 @@ public class CarAgentActor extends AbstractActor {
         this.acceleration = acc;
         this.deceleration = dec;
         this.maxSpeed = vMax;
-        getContext().actorSelection("/user/env").tell(new Message("register-car", List.of(id, this, road, initialPos)), ActorRef.noSender());
+        getContext().actorSelection("/user/roadenv").tell(new Message("register-car", List.of(id, this, road, initialPos)), ActorRef.noSender());
         state = CarAgentState.STOPPED;
     }
 
@@ -59,7 +59,7 @@ public class CarAgentActor extends AbstractActor {
 
     private void step(int dt) {
 
-        Future<Object> future = Patterns.ask(getContext().actorSelection("/user/env"), new Message("get-current-percepts", List.of(getId())), 1000);
+        Future<Object> future = Patterns.ask(getContext().actorSelection("/user/roadenv"), new Message("get-current-percepts", List.of(getId())), 1000);
         try {
             currentPercepts = (CarPercept) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
         } catch (TimeoutException | InterruptedException e) {
@@ -72,7 +72,7 @@ public class CarAgentActor extends AbstractActor {
         decide(dt);
 
         /* act */
-        getContext().actorSelection("/user/env").tell(new Message("submit-action", List.of(selectedAction)), ActorRef.noSender());
+        getContext().actorSelection("/user/roadenv").tell(new Message("submit-action", List.of(selectedAction)), ActorRef.noSender());
     }
 
     private double getCurrentSpeed() {
