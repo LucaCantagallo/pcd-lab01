@@ -20,14 +20,14 @@ public class RoadSimView extends JFrame implements SimulationListener {
 
 	private RoadSimViewPanel panel;
 	private static final int CAR_DRAW_SIZE = 10;
-	private final JButton start = new JButton("Start");
-	private final JButton stop = new JButton("Stop");
-	private final JButton pause = new JButton("Pause");
-	private final JSlider slider = new JSlider(100, 100000);
-	private final JLabel stepNumLabel = new JLabel("Number of step to execute:  %,d".formatted(slider.getValue()));
+	private final JButton start = new JButton("START");
+	private final JButton stop = new JButton("STOP");
+	private final JButton pause = new JButton("PAUSE");
+	private final JSlider slider = new JSlider(100, 8000);
+	private final JLabel stepNumLabel = new JLabel("Number of step:  %,d".formatted(slider.getValue()));
 
 	public RoadSimView() {
-		super("RoadSim View");
+		super("Road Simulator View");
 
 		setSize(1500,800);
 
@@ -44,32 +44,31 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		JLabel simName = new JLabel("Simulation");
 		simName.setHorizontalAlignment(SwingConstants.CENTER);
 		Font font = simName.getFont();
-		simName.setFont(new Font(font.getName(), Font.BOLD, 15)); // Cambia la dimensione del font a 20
+		simName.setFont(new Font(font.getName(), Font.BOLD, 15));
 
 		stepNumLabel.setFont(new Font(font.getName(), Font.BOLD, 15));
 		stepNumLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-		slider.addChangeListener(e -> stepNumLabel.setText("Number of step to execute: %,d".formatted(slider.getValue())));
+		slider.addChangeListener(e -> stepNumLabel.setText("Number of step: %,d".formatted(slider.getValue())));
 
 		pause.setEnabled(false);
 		stop.setEnabled(false);
 
-		Dimension buttonSize = new Dimension(100, 50);
-		// Imposta le dimensioni dei pulsanti
+		Dimension buttonSize = new Dimension(80, 40);
 		start.setPreferredSize(buttonSize);
 		stop.setPreferredSize(buttonSize);
 		pause.setPreferredSize(buttonSize);
 
 		start.setBackground(Color.green);
 
-		slider.setPreferredSize(new Dimension(1000, 50));
+		slider.setPreferredSize(new Dimension(500, 70));
 
 		buttons.add(simName);
 
 		JPanel buttonPanel = new JPanel(new GridLayout(1,3));
 		buttonPanel.add(start, BorderLayout.NORTH);
-		buttonPanel.add(stop, BorderLayout.NORTH);
 		buttonPanel.add(pause, BorderLayout.NORTH);
+		buttonPanel.add(stop, BorderLayout.NORTH);
 
 		buttons.add(buttonPanel);
 
@@ -82,9 +81,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		cp.add(buttons, BorderLayout.NORTH);
 		cp.add(BorderLayout.CENTER,panel);
 		setContentPane(cp);
-
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-			
 	}
 
 	@Override
@@ -148,7 +145,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		}
 
 		public void paintComponent(Graphics g) {
-			super.paintComponent(g);   
+			super.paintComponent(g);
 	        Graphics2D g2 = (Graphics2D)g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 			g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -210,5 +207,4 @@ public class RoadSimView extends JFrame implements SimulationListener {
 	public void display() {
 		SwingUtilities.invokeLater(this::run);
 	}
-
 }
