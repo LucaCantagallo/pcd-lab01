@@ -35,6 +35,8 @@ dependencies {
     implementation("com.typesafe.akka:akka-actor-typed_2.13:2.8.0")
     implementation("com.typesafe.akka:akka-stream_2.13:2.8.0")
     implementation("com.typesafe.akka:akka-testkit_2.13:2.8.0")
+
+    implementation("de.sfuhrm:sudoku:5.0.1")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -46,7 +48,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "pcd.part1.main.RunTrafficSimulation"
+    mainClass = "pcd.ass03.part1.main.RunTrafficSimulation"
 }
 
 tasks.named<Test>("test") {
