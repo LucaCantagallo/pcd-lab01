@@ -26,7 +26,7 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
         int dt = 1;
 
         Road r;
-        Future<Object> future = Patterns.ask(system.actorSelection("/user/env"), new Message("create-road", List.of(new P2d(0, 300), new P2d(1500, 300))), 1000);
+        Future<Object> future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("create-road", List.of(new P2d(0, 300), new P2d(1500, 300))), 1000);
 
         try {
             r = (Road) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
