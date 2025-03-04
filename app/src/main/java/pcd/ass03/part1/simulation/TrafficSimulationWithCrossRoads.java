@@ -28,7 +28,7 @@ public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 
 				
 		TrafficLight tl1;
-		Future<Object> future = Patterns.ask(system.actorSelection("/user/env"), new Message("create-traffic-light", List.of(new P2d(740,300), TrafficLight.TrafficLightState.GREEN, 75, 25, 100)), 1000);
+		Future<Object> future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("create-traffic-light", List.of(new P2d(740,300), TrafficLight.TrafficLightState.GREEN, 75, 25, 100)), 1000);
 		try {
 			tl1 = (TrafficLight) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
 		} catch (TimeoutException | InterruptedException e) {
@@ -36,7 +36,7 @@ public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 		}
 
 		Road r1;
-		future = Patterns.ask(system.actorSelection("/user/env"), new Message("create-road", List.of(new P2d(0, 300), new P2d(1500, 300))), 1000);
+		future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("create-road", List.of(new P2d(0, 300), new P2d(1500, 300))), 1000);
 		try {
 			r1 = (Road) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
 		} catch (TimeoutException | InterruptedException e) {
@@ -51,7 +51,7 @@ public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 		System.out.println("creato car-2");
 
 		TrafficLight tl2;
-		future = Patterns.ask(system.actorSelection("/user/env"), new Message("create-traffic-light", List.of(new P2d(750,290), TrafficLight.TrafficLightState.RED, 75, 25, 100)), 1000);
+		future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("create-traffic-light", List.of(new P2d(750,290), TrafficLight.TrafficLightState.RED, 75, 25, 100)), 1000);
 		try {
 			tl2 = (TrafficLight) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
 		} catch (TimeoutException | InterruptedException e) {
@@ -59,7 +59,7 @@ public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 		}
 
 		Road r2;
-		future = Patterns.ask(system.actorSelection("/user/env"), new Message("create-road", List.of(new P2d(750,0), new P2d(750,600))), 1000);
+		future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("create-road", List.of(new P2d(750,0), new P2d(750,600))), 1000);
 		try {
 			r2 = (Road) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
 		} catch (TimeoutException | InterruptedException e) {

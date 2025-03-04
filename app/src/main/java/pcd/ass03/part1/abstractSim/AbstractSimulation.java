@@ -29,7 +29,7 @@ public abstract class AbstractSimulation {
 
     protected AbstractSimulation(int numCar){
         system = ActorSystem.create("TrafficSimulation");
-        system.actorOf(Props.create(EnvironmentActor.class, "RoadEnv"), "env");
+        system.actorOf(Props.create(EnvironmentActor.class, "RoadEnv"), "roadenv");
         system.actorOf(Props.create(SimulationActor.class), "sim");
         this.numCars = numCar;
     }
@@ -54,7 +54,7 @@ public abstract class AbstractSimulation {
         /* initialize the env and the agents inside */
         int t = t0;
 
-        system.actorSelection("/user/env").tell(new Message("init", List.of(numSteps, numCars)), ActorRef.noSender());
+        system.actorSelection("/user/roadenv").tell(new Message("init", List.of(numSteps, numCars)), ActorRef.noSender());
         for (int i = 0; i < 4; i++) {
             system.actorSelection("/user/car-" + i).tell(new Message("init", null), ActorRef.noSender());
         }
@@ -62,7 +62,7 @@ public abstract class AbstractSimulation {
         this.notifyReset(t);
 
         /* make a step */
-        system.actorSelection("/user/env").tell(new Message("step", List.of(dt)), ActorRef.noSender());
+        system.actorSelection("/user/roadenv").tell(new Message("step", List.of(dt)), ActorRef.noSender());
     }
 
     public long getSimulationDuration() {
@@ -114,7 +114,7 @@ public abstract class AbstractSimulation {
     }
 
     public boolean isCompleted(){
-        Future<Object> future = Patterns.ask(system.actorSelection("/user/env"), new Message("is-completed", List.of()), 1000);
+        Future<Object> future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("is-completed", List.of()), 1000);
         try {
             return (boolean) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
         } catch (TimeoutException | InterruptedException e) {

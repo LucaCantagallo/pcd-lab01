@@ -1,5 +1,6 @@
 package pcd.ass03.part1.simulation;
 
+
 import akka.actor.Props;
 import akka.pattern.Patterns;
 import pcd.ass03.part1.abstractSim.AbstractSimulation;
@@ -15,13 +16,20 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class TrafficSimulationSingleRoadMassiveNumberOfCars extends AbstractSimulation {
+/**
+ * 
+ * Traffic Simulation about a number of cars 
+ * moving on a single road, no traffic lights
+ * 
+ */
+public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation {
 
-	public TrafficSimulationSingleRoadMassiveNumberOfCars(int numCars) {
-		super(numCars);
+	public TrafficSimulationSingleRoadSeveralCars() {
+		super(30);
 	}
 	
 	public void setup() {
+
 		this.setupTimings(0, 1);
 
 		Road r;
@@ -35,7 +43,9 @@ public class TrafficSimulationSingleRoadMassiveNumberOfCars extends AbstractSimu
 		for (int i = 0; i < this.numCars; i++) {
 			
 			String carId = "car-" + i;
-			double initialPos = i*10;			
+			// double initialPos = i*30;
+			double initialPos = i*10;
+			
 			double carAcceleration = 1; //  + gen.nextDouble()/2;
 			double carDeceleration = 0.3; //  + gen.nextDouble()/2;
 			double carMaxSpeed = 7; // 4 + gen.nextDouble();
@@ -43,6 +53,7 @@ public class TrafficSimulationSingleRoadMassiveNumberOfCars extends AbstractSimu
 
 		}
 		
+		this.syncWithTime(25);
 	}	
 }
 	
