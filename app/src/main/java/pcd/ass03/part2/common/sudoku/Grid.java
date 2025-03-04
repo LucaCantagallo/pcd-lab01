@@ -13,7 +13,7 @@ public class Grid {
     public Grid() {
         GameMatrix gm = Creator.createFull();
 
-        Riddle r = Creator.createRiddle(gm);
+        Riddle r = Creator.createRiddle(gm); //
 
         grid = new Cell[9][9];
         for(int row=0; row<9; row++){

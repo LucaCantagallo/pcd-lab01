@@ -11,7 +11,7 @@ public class Cell {
     private boolean isShowed;
     private boolean isVisited;
     private boolean isVisitedByMe;
-    private CellListener listener;
+
 
     public Cell(Optional<Integer> value, int hiddenValue) {
         this.value = value;
@@ -71,7 +71,4 @@ public class Cell {
         isVisitedByMe = visitedByMe;
     }
 
-    public void setListener(CellListener listener) {
-        this.listener = listener;
-    }
 }
