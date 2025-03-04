@@ -91,6 +91,9 @@ public class SudokuView extends JFrame {
                             if (isCorrect) {
                                 textField.setText(String.valueOf(insertedValue));
                                 textField.setEditable(false); // Blocchiamo la modifica del valore
+                                if(insertChecker.checkWinning()){
+                                    JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
+                                }
                             } else {
                                 // Se il valore non è corretto, possiamo opzionalmente fare qualcosa (es. mostrare un errore)
                                 JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);

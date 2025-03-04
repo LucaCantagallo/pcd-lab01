@@ -23,4 +23,8 @@ public class SudokuInsertChecker {
         //Da qui in futuro potremmo contare gli errori
         return false; // Valore errato
     }
+
+    public boolean checkWinning(){
+        return grid.countEmpty()==0;
+    }
 }
