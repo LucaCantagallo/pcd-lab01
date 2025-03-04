@@ -2,7 +2,7 @@ package pcd.ass03.part1.main;
 
 import pcd.ass03.part1.simulation.TrafficSimulationWithCrossRoads;
 import pcd.ass03.part1.view.RoadSimView;
-import pcd.ass03.part1.view.SimViewController;
+import pcd.ass03.part1.view.ViewController;
 
 /**
  * 
@@ -19,6 +19,6 @@ public class RunTrafficSimulation {
 		//var simulation = new TrafficSimulationSingleRoadWithTrafficLightTwoCars();
 
 		simulation.setup();
-		SimViewController controller = new SimViewController(simulation, new RoadSimView());
+		ViewController controller = new ViewController(simulation, new RoadSimView());
 	}
 }

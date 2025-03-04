@@ -12,19 +12,18 @@ import java.util.List;
 import java.util.Optional;
 
 public class EnvironmentActor extends AbstractActor {
-    /* abstract environment */
+
     private final String id;
     protected List<Action> submittedActions;
     private static final int MIN_DIST_ALLOWED = 5;
     private static final int CAR_DETECTION_RANGE = 30;
-    //private static final int SEM_DETECTION_RANGE = 30;
+
     private int dt;
     private final List<Road> roads;
     private int nStep;
     private int nCars;
     private int count = 0;
 
-    /* traffic lights */
     private final List<TrafficLight> trafficLights;
     private int actualNumStep = 0;
 
@@ -138,7 +137,6 @@ public class EnvironmentActor extends AbstractActor {
                 } else {
                     info.updatePos(info.getPos() + mv.distance());
                 }
-
                 if (info.getPos() > road.getLen()) {
                     info.updatePos(0);
                 }
@@ -161,9 +159,7 @@ public class EnvironmentActor extends AbstractActor {
 
     // no receive
     private Optional<CarAgentInfo> getNearestCarInFront(Road road, double carPos){
-        return
-                registeredCars
-                        .values()
+        return registeredCars.values()
                         .stream()
                         .filter((carInfo) -> carInfo.getRoad() == road)
                         .filter((carInfo) -> {
@@ -175,8 +171,7 @@ public class EnvironmentActor extends AbstractActor {
 
     // no receive
     private Optional<TrafficLightInfo> getNearestSemaphoreInFront(Road road, double carPos){
-        return
-                road.getTrafficLights()
+        return road.getTrafficLights()
                         .stream()
                         .filter((TrafficLightInfo tl) -> tl.roadPos() > carPos)
                         .min((c1, c2) -> (int) Math.round(c1.roadPos() - c2.roadPos()));
@@ -216,5 +211,4 @@ public class EnvironmentActor extends AbstractActor {
                 .match(Message.class, message -> "is-completed".equals(message.name()), message -> getSender().tell(isCompleted, getSelf()))
                 .build();
     }
-
 }

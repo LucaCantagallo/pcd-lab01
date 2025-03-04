@@ -32,7 +32,6 @@ public class RoadSimStatistics implements SimulationListener {
 	@Override
 	public void notifyInit(int t) {
 		// TODO Auto-generated method stub
-		// log("reset: " + t);
 		averageSpeed = 0;
 	}
 

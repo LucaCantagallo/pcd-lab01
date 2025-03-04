@@ -87,22 +87,6 @@ public class RoadSimView extends JFrame implements SimulationListener {
 			
 	}
 
-	public void addStartListener(ActionListener l) {
-		start.addActionListener(l);
-	}
-
-	public void addStopListener(ActionListener l) {
-		stop.addActionListener(l);
-	}
-
-	public void addPauseListener(ActionListener l) {
-		pause.addActionListener(l);
-	}
-
-	public void display() {
-		SwingUtilities.invokeLater(this::run);
-	}
-
 	@Override
 	public void notifyInit(int t) {
 	}
@@ -113,19 +97,19 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		List<Road> roads;
 		List<CarAgentInfo> info;
 		List<TrafficLight> sems;
-		Future<Object> future = Patterns.ask(system.actorSelection("/user/env"), new Message("get-roads", null), 1000);
+		Future<Object> future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("get-roads", null), 1000);
 		try {
 			roads = (List<Road>) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
 		} catch (TimeoutException | InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		future = Patterns.ask(system.actorSelection("/user/env"), new Message("get-agent-info", null), 1000);
+		future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("get-agent-info", null), 1000);
 		try {
 			info = (List<CarAgentInfo>) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
 		} catch (TimeoutException | InterruptedException e) {
 			throw new RuntimeException(e);
 		}
-		future = Patterns.ask(system.actorSelection("/user/env"), new Message("get-traffic-lights", null), 1000);
+		future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("get-traffic-lights", null), 1000);
 		try {
 			sems = (List<TrafficLight>) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
 		} catch (TimeoutException | InterruptedException e) {
@@ -211,5 +195,20 @@ public class RoadSimView extends JFrame implements SimulationListener {
 	   }
 	}
 
+	public void addStartListener(ActionListener l) {
+		start.addActionListener(l);
+	}
+
+	public void addStopListener(ActionListener l) {
+		stop.addActionListener(l);
+	}
+
+	public void addPauseListener(ActionListener l) {
+		pause.addActionListener(l);
+	}
+
+	public void display() {
+		SwingUtilities.invokeLater(this::run);
+	}
 
 }

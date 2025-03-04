@@ -68,7 +68,7 @@ public class SimulationActor extends AbstractActor {
             for (var l: listeners) {
                 l.notifyStepDone(t, system);
             }
-            getContext().actorSelection("/user/env").tell(new Message("step", List.of(t)), ActorRef.noSender());
+            getContext().actorSelection("/user/roadenv").tell(new Message("step", List.of(t)), ActorRef.noSender());
         }
     }
 
