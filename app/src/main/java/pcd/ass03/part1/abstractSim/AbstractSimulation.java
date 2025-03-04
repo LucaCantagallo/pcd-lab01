@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
 public abstract class AbstractSimulation {
     protected ActorSystem system;
 
-    /* logical time step */
+    /* logical time step (delta time) */
     private int dt;
 
     /* initial logical time */

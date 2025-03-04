@@ -17,10 +17,8 @@ import java.util.concurrent.TimeoutException;
 
 public class CarAgentActor extends AbstractActor {
 
-    /* abstract agent */
     private final String myId;
 
-    /* Car Agent */
     protected double maxSpeed;
     protected double currentSpeed;
     protected double acceleration;
@@ -28,7 +26,6 @@ public class CarAgentActor extends AbstractActor {
     protected CarPercept currentPercepts;
     private Action selectedAction;
 
-    /* CAR EXTENDED */
     private static final int CAR_NEAR_DIST = 15;
     private static final int CAR_FAR_ENOUGH_DIST = 20;
     private static final int MAX_WAITING_TIME = 2;
