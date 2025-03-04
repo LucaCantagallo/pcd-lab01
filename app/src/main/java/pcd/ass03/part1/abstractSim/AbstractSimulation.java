@@ -5,7 +5,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.pattern.Patterns;
-import pcd.ass03.part1.actor.EnvironmentActor;
+import pcd.ass03.part1.actor.RoadEnvActor;
 import pcd.ass03.part1.actor.SimulationActor;
 import pcd.ass03.part1.model.Message;
 import scala.concurrent.Await;
@@ -29,7 +29,7 @@ public abstract class AbstractSimulation {
 
     protected AbstractSimulation(int numCar){
         system = ActorSystem.create("TrafficSimulation");
-        system.actorOf(Props.create(EnvironmentActor.class, "RoadEnv"), "roadenv");
+        system.actorOf(Props.create(RoadEnvActor.class, "RoadEnv"), "roadenv");
         system.actorOf(Props.create(SimulationActor.class), "sim");
         this.numCars = numCar;
     }

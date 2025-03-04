@@ -78,14 +78,14 @@ public class ViewController {
         @Override
         public void actionPerformed(ActionEvent e) {
             view.getStartButton().setBackground(Color.white);
-            if(view.getPauseButton().getText().equals("Resume")){
+            if(view.getPauseButton().getText().equals("RESUME")){
                 simulation.resume();
-                view.getPauseButton().setText("Pause");
+                view.getPauseButton().setText("PAUSE");
                 view.getStopButton().setBackground(Color.red);
                 view.getStopButton().setEnabled(true);
             } else {
                 simulation.pause();
-                view.getPauseButton().setText("Resume");
+                view.getPauseButton().setText("RESUME");
                 view.getStopButton().setBackground(Color.white);
                 view.getStopButton().setEnabled(false);
             }
