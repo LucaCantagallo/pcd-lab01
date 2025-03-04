@@ -2,15 +2,19 @@ package pcd.ass03.part2.common.view;
 
 import pcd.ass03.part2.common.sudoku.Cell;
 import pcd.ass03.part2.common.sudoku.Grid;
+import pcd.ass03.part2.common.sudoku.SudokuInsertChecker;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class SudokuView extends JFrame {
 
     private Grid sudokuGrid;
     private JTextField[][] textFields; // Array per gestire le JTextField
+    private SudokuInsertChecker insertChecker; // Oggetto per controllare gli inserimenti
 
     public SudokuView() {
         // Impostazioni della finestra principale
@@ -19,6 +23,10 @@ public class SudokuView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(9, 9)); // Definiamo una griglia 9x9
         sudokuGrid = new Grid(); // Qui crea sempre nuovi sudoku PER ORA
+        System.out.println(sudokuGrid.getGm());
+        System.out.println(sudokuGrid.getR());
+        System.out.println(sudokuGrid.countEmpty());
+        insertChecker = new SudokuInsertChecker(sudokuGrid);
 
         // Inizializziamo l'array di JTextField
         textFields = new JTextField[9][9];
@@ -63,6 +71,34 @@ public class SudokuView extends JFrame {
                     textField.setBorder(BorderFactory.createCompoundBorder(currentBorder, thickRightBorder)); // Combiniamo il bordo sottile con il bordo spesso
                 }
 
+                // Aggiungiamo un KeyListener per gestire l'inserimento dei numeri
+                final int rowIndex = row;
+                final int colIndex = col;
+
+                textField.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        char c = e.getKeyChar();
+
+                        // Verifica se il carattere è un numero
+                        if (Character.isDigit(c)) {
+                            int insertedValue = Character.getNumericValue(c);
+
+                            // Chiama il SudokuInsertChecker per verificare l'inserimento
+                            boolean isCorrect = insertChecker.checkInsert(rowIndex, colIndex, insertedValue);
+
+                            // Se il valore è corretto, aggiorna il JTextField
+                            if (isCorrect) {
+                                textField.setText(String.valueOf(insertedValue));
+                                textField.setEditable(false); // Blocchiamo la modifica del valore
+                            } else {
+                                // Se il valore non è corretto, possiamo opzionalmente fare qualcosa (es. mostrare un errore)
+                                JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }
+                });
+
                 // Aggiungiamo il JTextField all'array e alla finestra
                 textFields[row][col] = textField;
                 add(textField);
@@ -74,6 +110,8 @@ public class SudokuView extends JFrame {
     }
 
     public static void main(String[] args) {
+
         SwingUtilities.invokeLater(() -> new SudokuView());
+
     }
 }

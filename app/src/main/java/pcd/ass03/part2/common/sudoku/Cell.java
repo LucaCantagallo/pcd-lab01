@@ -7,8 +7,6 @@ public class Cell {
     private Optional<Integer> value;
     private int hiddenValue;
 
-    private Optional<Integer> valueInsered;
-    private boolean isShowed;
     private boolean isVisited;
     private boolean isVisitedByMe;
 
@@ -16,7 +14,6 @@ public class Cell {
     public Cell(Optional<Integer> value, int hiddenValue) {
         this.value = value;
         this.hiddenValue = hiddenValue;
-        this.isShowed = !value.isEmpty();
         this.isVisited = false;
         this.isVisitedByMe = false;
     }
@@ -46,21 +43,7 @@ public class Cell {
     }
 
     public boolean isShowed() {
-        return isShowed;
-    }
-
-    public void setShowed(boolean showed) {
-        isShowed = showed;
-    }
-
-    public void setValueInsered(int valueInsered) {
-        if(!isShowed){
-            this.valueInsered = Optional.of(valueInsered);
-        }
-    }
-
-    public boolean trueValueChecker(){
-        return this.valueInsered.isPresent() && this.valueInsered.get() == this.hiddenValue;
+        return value.isPresent();
     }
 
     public boolean isVisitedByMe() {
