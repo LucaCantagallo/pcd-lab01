@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public class EnvironmentActor extends AbstractActor {
+public class RoadEnvActor extends AbstractActor {
 
     private final String id;
     protected List<Action> submittedActions;
@@ -31,7 +31,7 @@ public class EnvironmentActor extends AbstractActor {
     private final HashMap<String, CarAgentInfo> registeredCars;
     private boolean isCompleted = false;
 
-    public EnvironmentActor(String id) {
+    public RoadEnvActor(String id) {
         super();
         this.id = id;
         submittedActions = new ArrayList<>();
@@ -164,7 +164,7 @@ public class EnvironmentActor extends AbstractActor {
                         .filter((carInfo) -> carInfo.getRoad() == road)
                         .filter((carInfo) -> {
                             double dist = carInfo.getPos() - carPos;
-                            return dist > 0 && dist <= (double) EnvironmentActor.CAR_DETECTION_RANGE;
+                            return dist > 0 && dist <= (double) RoadEnvActor.CAR_DETECTION_RANGE;
                         })
                         .min((c1, c2) -> (int) Math.round(c1.getPos() - c2.getPos()));
     }
