@@ -94,7 +94,10 @@ public class SudokuView extends JFrame {
                             } else {
                                 // Se il valore non è corretto, possiamo opzionalmente fare qualcosa (es. mostrare un errore)
                                 JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
+                                e.consume();
                             }
+                        } else {
+                            e.consume();
                         }
                     }
                 });

@@ -20,7 +20,7 @@ public class SudokuInsertChecker {
             System.out.println(grid.countEmpty());
             return true; // Valore corretto
         }
-
+        //Da qui in futuro potremmo contare gli errori
         return false; // Valore errato
     }
 }
