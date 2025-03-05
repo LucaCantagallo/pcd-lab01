@@ -37,6 +37,9 @@ dependencies {
     implementation("com.typesafe.akka:akka-testkit_2.13:2.8.0")
 
     implementation("de.sfuhrm:sudoku:5.0.1")
+
+    implementation("com.rabbitmq:amqp-client:5.24.0")
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -48,7 +51,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "pcd.ass03.part1.main.RunTrafficSimulation"
+    mainClass = "pcd.ass03.part2.common.view.HomeView"
 }
 
 tasks.named<Test>("test") {
