@@ -24,6 +24,7 @@ public class SudokuView extends JFrame {
 
         Grid sudokuGrid = new Grid("password"); // Qui crea sempre nuovi sudoku PER ORA
         insertChecker = new SudokuInsertChecker(sudokuGrid);
+        System.out.println(sudokuGrid.getGm().toString());
 
         // Pannello per la griglia
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));
@@ -61,34 +62,36 @@ public class SudokuView extends JFrame {
                     textField.setBorder(BorderFactory.createCompoundBorder(textField.getBorder(), thickRightBorder));
                 }
 
-                // Listener per l'inserimento
-                final int rowIndex = row;
-                final int colIndex = col;
+                if(!cell.isShowed()) {
+                    // Listener per l'inserimento
+                    final int rowIndex = row;
+                    final int colIndex = col;
 
-                textField.addKeyListener(new KeyAdapter() {
-                    @Override
-                    public void keyTyped(KeyEvent e) {
-                        char c = e.getKeyChar();
+                    textField.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                            char c = e.getKeyChar();
 
-                        if (Character.isDigit(c)) {
-                            int insertedValue = Character.getNumericValue(c);
-                            boolean isCorrect = insertChecker.checkInsert(rowIndex, colIndex, insertedValue);
+                            if (Character.isDigit(c)) {
+                                int insertedValue = Character.getNumericValue(c);
+                                boolean isCorrect = insertChecker.checkInsert(rowIndex, colIndex, insertedValue);
 
-                            if (isCorrect) {
-                                textField.setText(String.valueOf(insertedValue));
-                                textField.setEditable(false);
-                                if (insertChecker.checkWinning()) {
-                                    JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
+                                if (isCorrect) {
+                                    textField.setText(String.valueOf(insertedValue));
+                                    textField.setEditable(false);
+                                    if (insertChecker.checkWinning()) {
+                                        JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
+                                    }
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
+                                    e.consume();
                                 }
                             } else {
-                                JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
                                 e.consume();
                             }
-                        } else {
-                            e.consume();
                         }
-                    }
-                });
+                    });
+                }
 
                 textFields[row][col] = textField;
                 gridPanel.add(textField);
