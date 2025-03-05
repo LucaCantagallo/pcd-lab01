@@ -24,6 +24,11 @@ public class SudokuInsertChecker {
         return false; // Valore errato
     }
 
+    public void setFocus(int row, int col, boolean visited){
+        grid.getCell(row,col).setVisited(visited);
+        grid.getCell(row,col).setVisitedByMe(visited);
+    }
+
     public boolean checkWinning(){
         return grid.countEmpty()==0;
     }

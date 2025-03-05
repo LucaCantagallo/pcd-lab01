@@ -7,8 +7,7 @@ import pcd.ass03.part2.common.sudoku.SudokuInsertChecker;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
 public class SudokuView extends JFrame {
 
@@ -62,6 +61,18 @@ public class SudokuView extends JFrame {
                     textField.setBorder(BorderFactory.createCompoundBorder(textField.getBorder(), thickRightBorder));
                 }
 
+                final JTextField tf = textField;
+                int finalRow1 = row;
+                int finalCol1 = col;
+                textField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        // Colora la cella di rosso quando viene cliccata
+                        tf.setBackground(Color.ORANGE);
+                        insertChecker.setFocus(finalRow1, finalCol1, true);
+                    }
+                });
+
                 if(!cell.isShowed()) {
                     // Listener per l'inserimento
                     final int rowIndex = row;
@@ -92,6 +103,16 @@ public class SudokuView extends JFrame {
                         }
                     });
                 }
+
+                int finalRow = row;
+                int finalCol = col;
+                textField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        textField.setBackground(Color.WHITE);
+                        insertChecker.setFocus(finalRow, finalCol, false);
+                    }
+                });
 
                 textFields[row][col] = textField;
                 gridPanel.add(textField);
