@@ -42,6 +42,7 @@ public class SudokuView extends JFrame {
                 if (cell.isShowed()) {
                     textField.setText(cell.getValue().map(String::valueOf).orElse(""));
                     textField.setEditable(false);
+                    textField.setBackground(Color.GREEN);
                 } else {
                     textField.setText("");
                     textField.setEditable(true);
@@ -67,7 +68,7 @@ public class SudokuView extends JFrame {
                 textField.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        // Colora la cella di rosso quando viene cliccata
+
                         tf.setBackground(Color.ORANGE);
                         insertChecker.setFocus(finalRow1, finalCol1, true);
                     }
@@ -109,7 +110,11 @@ public class SudokuView extends JFrame {
                 textField.addFocusListener(new FocusAdapter() {
                     @Override
                     public void focusLost(FocusEvent e) {
-                        textField.setBackground(Color.WHITE);
+                        if (sudokuGrid.getCell(finalRow, finalCol).isShowed()) {
+                            textField.setBackground(Color.GREEN);
+                        } else {
+                            textField.setBackground(Color.WHITE);
+                        }
                         insertChecker.setFocus(finalRow, finalCol, false);
                     }
                 });
