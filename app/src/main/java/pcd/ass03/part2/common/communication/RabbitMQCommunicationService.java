@@ -1,70 +1,101 @@
 package pcd.ass03.part2.common.communication;
 
 import com.rabbitmq.client.*;
-
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 import java.util.Map;
 
 public class RabbitMQCommunicationService implements CommunicationService {
+    private static final String EXCHANGE_NAME = "sudoku_exchange";
     private Connection connection;
-    private Map<String, Channel> channels; // Mappa per gestire più canali
+    private Map<String, Channel> channelMap;
 
-    public RabbitMQCommunicationService(String host, String user, String pass) throws Exception {
+    public RabbitMQCommunicationService() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(host);
-        factory.setUsername(user);
-        factory.setPassword(pass);
-        factory.setVirtualHost("/");
-        factory.setPort(5672);
-
+        factory.setHost("localhost");
         connection = factory.newConnection();
-        channels = new HashMap<>();
+        channelMap = new ConcurrentHashMap<>();
     }
 
-    // Metodo per ottenere un canale esistente o crearne uno nuovo per una coda specifica
-    private Channel getOrCreateChannel(String queueName) throws Exception {
-        if (!channels.containsKey(queueName)) {
-            Channel channel = connection.createChannel(); // Crea un canale solo se non esiste già
-            channel.queueDeclare(queueName, true, false, false, null); // Dichiarazione della coda come "durable"
-            channels.put(queueName, channel);
-        }
-        return channels.get(queueName);
-    }
-
-    @Override
-    public void sendMessage(String queueName, String message) throws Exception {
-        Channel channel = getOrCreateChannel(queueName); // Ottieni o crea il canale
-        channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
-    }
-
-    @Override
-    public String receiveMessage(String queueName) throws Exception {
-        Channel channel = getOrCreateChannel(queueName); // Ottieni o crea il canale
-        GetResponse response = channel.basicGet(queueName, true);
-        return response != null ? new String(response.getBody()) : null;
-    }
-
-    public void startConsuming(String queueName) throws Exception {
-        Channel channel = getOrCreateChannel(queueName); // Ottieni o crea il canale
-        channel.basicConsume(queueName, true, new DefaultConsumer(channel) {
-
-            public void handleDelivery(String consumerTag, Delivery delivery) throws IOException {
-                String message = new String(delivery.getBody(), "UTF-8");
-                System.out.println("Received: " + message);
+    private Channel getOrCreateChannel(String queueName) throws IOException {
+        return channelMap.computeIfAbsent(queueName, key -> {
+            try {
+                Channel channel = connection.createChannel();
+                channel.queueDeclare(key, true, false, false, null);
+                return channel;
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to create channel for queue: " + queueName, e);
             }
         });
     }
 
-    public void close() throws Exception {
-        // Chiude tutti i canali aperti
-        for (Channel channel : channels.values()) {
-            if (channel != null && channel.isOpen()) {
-                channel.close();
-            }
+    private void sendMessage(String queueName, String message) throws IOException {
+        Channel channel = getOrCreateChannel(queueName);
+        channel.basicPublish("", queueName, null, message.getBytes());
+    }
+
+    @Override
+    public void createGame(String gameCode) throws IOException {
+        sendMessage("createGame_" + gameCode, gameCode);
+    }
+
+    @Override
+    public void joinGame(String gameCode, String playerId) throws IOException {
+        sendMessage("joinGame_" + gameCode, playerId);
+    }
+
+    @Override
+    public void selectCell(String gameCode, String playerId, int x, int y) throws IOException {
+        sendMessage("selectCell_" + gameCode, playerId + ":" + x + ":" + y);
+    }
+
+    @Override
+    public void insertNumber(String gameCode, String playerId, int x, int y, int value) throws IOException {
+        sendMessage("insertNumber_" + gameCode, playerId + ":" + x + ":" + y + ":" + value);
+    }
+
+    @Override
+    public void leaveGame(String gameCode, String playerId) throws IOException {
+        sendMessage("leaveGame_" + gameCode, playerId);
+    }
+
+    public void startListening(String gameCode) throws IOException {
+        listenToQueue("createGame_" + gameCode, (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), "UTF-8");
+            System.out.println("Game created: " + message);
+        });
+
+        listenToQueue("joinGame_" + gameCode, (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), "UTF-8");
+            System.out.println("Player joined: " + message);
+        });
+
+        listenToQueue("selectCell_" + gameCode, (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), "UTF-8");
+            System.out.println("Cell selected: " + message);
+        });
+
+        listenToQueue("insertNumber_" + gameCode, (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), "UTF-8");
+            System.out.println("Number inserted: " + message);
+        });
+
+        listenToQueue("leaveGame_" + gameCode, (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), "UTF-8");
+            System.out.println("Player left: " + message);
+        });
+    }
+
+    private void listenToQueue(String queueName, DeliverCallback callback) throws IOException {
+        Channel channel = getOrCreateChannel(queueName);
+        channel.basicConsume(queueName, true, callback, consumerTag -> {});
+    }
+
+    public void close() throws IOException, TimeoutException {
+        for (Channel channel : channelMap.values()) {
+            channel.close();
         }
-        if (connection != null && connection.isOpen()) {
-            connection.close();
-        }
+        connection.close();
     }
 }

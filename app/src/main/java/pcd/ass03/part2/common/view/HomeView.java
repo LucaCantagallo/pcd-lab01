@@ -7,70 +7,91 @@ import java.awt.event.ActionListener;
 
 public class HomeView extends JFrame {
 
+    private String nomeutente = "nomeutente"; //da impl
+
     public HomeView() {
-        // Impostazioni della finestra principale
         setTitle("Sudoku - Home");
-        setSize(600, 600); // Impostiamo la dimensione della finestra
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout()); // Layout per un posizionamento preciso dei componenti
+        setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Aggiungi margini (spazi) tra i componenti
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Creiamo una JLabel per il titolo "SUDOKU"
         JLabel titleLabel = new JLabel("SUDOKU");
-        titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 48)); // Font più grande e strano
-        titleLabel.setForeground(new Color(0xFF5733)); // Colore arancione per il testo
+        titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 48));
+        titleLabel.setForeground(new Color(0xFF5733));
 
-        // Posizioniamo il titolo al centro della finestra (colonna 0, riga 0)
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1; // Il titolo occupa una sola colonna
-        gbc.gridheight = 1; // Una sola riga
-        gbc.anchor = GridBagConstraints.CENTER; // Centra il componente
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         add(titleLabel, gbc);
 
-        // Creiamo un pulsante "Play"
-        JButton playButton = new JButton("Play");
-        playButton.setFont(new Font("Arial", Font.PLAIN, 20)); // Impostiamo il font per il pulsante
-        playButton.setBackground(new Color(0x5C6BC0)); // Colore blu per il pulsante
-        playButton.setForeground(Color.WHITE); // Colore del testo del pulsante
-        playButton.setFocusPainted(false); // Rimuove il bordo al focus
 
-        // Aggiungiamo un effetto hover sul pulsante
-        playButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                playButton.setBackground(new Color(0x3F51B5)); // Cambia il colore quando il mouse passa sopra
-            }
+        JLabel welcomeLabel = new JLabel("Bentornato "+nomeutente+"!");
+        welcomeLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        gbc.gridy = 1;
+        add(welcomeLabel, gbc);
 
+        JButton createButton = new JButton("Crea");
+        JButton playButton = new JButton("Gioca");
+        styleButton(createButton);
+        styleButton(playButton);
+
+        Dimension buttonSize = new Dimension(150, 50);
+        createButton.setPreferredSize(buttonSize);
+        playButton.setPreferredSize(buttonSize);
+
+        createButton.addActionListener(new ActionListener() {
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                playButton.setBackground(new Color(0x5C6BC0)); // Ritorna al colore originale
+            public void actionPerformed(ActionEvent e) {
+                String gameCode = JOptionPane.showInputDialog(
+                        HomeView.this, "Inserisci un gamecode per giocare con i tuoi amici!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
+
+                if (gameCode != null && !gameCode.trim().isEmpty()) {
+                    new SudokuView(gameCode);
+                    dispose();
+                }
             }
         });
 
-        // Azione del pulsante: aprire la vista del Sudoku
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Quando il pulsante viene premuto, apriamo la vista del Sudoku
-                new SudokuView();
-                // Chiudiamo la schermata Home
-                dispose();
+                System.out.println("Play premuto: da implementare");
             }
         });
 
-        // Posizioniamo il pulsante sotto il titolo (colonna 0, riga 1)
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1; // Il pulsante occupa una sola colonna
-        gbc.gridheight = 1; // Una sola riga
-        gbc.anchor = GridBagConstraints.CENTER; // Centra il pulsante
+        add(createButton, gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
         add(playButton, gbc);
 
-        // Rende la finestra visibile
         setVisible(true);
+    }
+
+    private void styleButton(JButton button) {
+        button.setFont(new Font("Arial", Font.PLAIN, 20));
+        button.setBackground(new Color(0x5C6BC0));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 50));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0x3F51B5));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0x5C6BC0));
+            }
+        });
     }
 
     public static void main(String[] args) {

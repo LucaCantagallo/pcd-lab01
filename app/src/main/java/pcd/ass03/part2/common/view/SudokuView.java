@@ -11,17 +11,21 @@ import java.awt.event.*;
 
 public class SudokuView extends JFrame {
 
+    private String gamecode; //da impl
+
     private final JTextField[][] textFields; // Array per gestire le JTextField
     private final SudokuInsertChecker insertChecker; // Oggetto per controllare gli inserimenti
 
-    public SudokuView() {
+    public SudokuView(String gamecode) {
+        this.gamecode = gamecode;
         // Impostazioni della finestra principale
         setTitle("Sudoku");
         setSize(600, 700); // Aumento altezza per il codice sudoku
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout()); // Cambiamo layout per più controllo
 
-        Grid sudokuGrid = new Grid("password"); // Qui crea sempre nuovi sudoku PER ORA
+
+        Grid sudokuGrid = new Grid(gamecode); // Qui crea sempre nuovi sudoku PER ORA
         insertChecker = new SudokuInsertChecker(sudokuGrid);
         System.out.println(sudokuGrid.getGm().toString());
 
