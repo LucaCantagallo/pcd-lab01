@@ -55,7 +55,13 @@ public class HomeView extends JFrame {
                 do {
                     gameCode = JOptionPane.showInputDialog(
                             HomeView.this, "Inserisci un gamecode per giocare con i tuoi amici!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
-                    if (gameCode != null && !gameCode.trim().isEmpty()) {
+
+                    // Aggiungi questo controllo per gestire il caso di annullamento
+                    if (gameCode == null) {
+                        return; // Esci dal metodo se l'utente ha annullato o chiuso la finestra
+                    }
+
+                    if (!gameCode.trim().isEmpty()) {
                         if (!GameCodeDatabase.isPresentCode(gameCode)) {
                             dispose();
                             new SudokuView(nomeutente, gameCode);
@@ -63,13 +69,13 @@ public class HomeView extends JFrame {
                         } else {
                             JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
                         }
-
                     } else {
                         JOptionPane.showMessageDialog(null, "Non è stato inserito alcun gamecode! Inserire un gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
                     }
                 } while(true);
             }
         });
+
 
         playButton.addActionListener(new ActionListener() {
             @Override
@@ -78,6 +84,11 @@ public class HomeView extends JFrame {
                 do {
                     gameCode = JOptionPane.showInputDialog(
                             HomeView.this, "Inserisci il gamecode per accedere al Sudoku!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
+
+                    // Aggiungi questo controllo per gestire il caso di annullamento
+                    if (gameCode == null) {
+                        return; // Esci dal metodo se l'utente ha annullato o chiuso la finestra
+                    }
 
                     if (gameCode != null && !gameCode.trim().isEmpty()) {
                         if (GameCodeDatabase.isPresentCode(gameCode)) {
@@ -91,6 +102,7 @@ public class HomeView extends JFrame {
                 } while (true);
             }
         });
+
 
 
         gbc.gridy = 2;
