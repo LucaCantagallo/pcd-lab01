@@ -1,6 +1,7 @@
 package pcd.ass03.part2.common.view;
 
 import pcd.ass03.part2.common.sudoku.Cell;
+import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
 import pcd.ass03.part2.common.sudoku.Grid;
 import pcd.ass03.part2.common.sudoku.SudokuInsertChecker;
 
@@ -33,7 +34,13 @@ public class SudokuView extends JFrame {
         JButton backButton = BackButtonFactory.createBackButton(this);
         topPanel.add(backButton);
 
-        Grid sudokuGrid = new Grid(gamecode);
+        Grid sudokuGrid;
+        if(GameCodeDatabase.isPresentCode(gamecode)){
+            sudokuGrid = GameCodeDatabase.getGrid(gamecode);
+        } else {
+            sudokuGrid = new Grid(gamecode);
+        }
+
         insertChecker = new SudokuInsertChecker(sudokuGrid);
 
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));

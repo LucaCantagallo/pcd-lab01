@@ -16,7 +16,7 @@ public class Grid {
 
     public Grid(String gamecode) {
         this.gamecode = gamecode;
-        GameCodeDatabase.addGameCode(gamecode);
+
         this.gm = Creator.createFull();
 
         this.r = Creator.createRiddle(gm); //
@@ -27,6 +27,7 @@ public class Grid {
                 grid[row][col] = new Cell(!r.getWritable(row,col)? Optional.of((int) gm.get(row,col)) : Optional.empty(), gm.get(row,col));
             }
         }
+        GameCodeDatabase.addGameCode(gamecode, this);
     }
 
     public int countEmpty(){
