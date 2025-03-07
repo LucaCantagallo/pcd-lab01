@@ -12,7 +12,6 @@ import java.util.Set;
 public class HomeView extends JFrame {
 
     private String nomeutente = "nomeutente"; //da impl
-    private Set<String> esempiMomentanei = new HashSet<>();
 
     public HomeView() {
         System.out.println("Home");
@@ -59,7 +58,7 @@ public class HomeView extends JFrame {
                     if (gameCode != null && !gameCode.trim().isEmpty()) {
                         if (!GameCodeDatabase.isPresentCode(gameCode)) {
                             dispose();
-                            new SudokuView(gameCode);
+                            new SudokuView(nomeutente, gameCode);
                             return;
                         } else {
                             JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -83,7 +82,7 @@ public class HomeView extends JFrame {
                     if (gameCode != null && !gameCode.trim().isEmpty()) {
                         if (GameCodeDatabase.isPresentCode(gameCode)) {
                             HomeView.this.dispose(); // Assicura di chiudere la finestra attuale
-                            new SudokuView(gameCode);
+                            new SudokuView(nomeutente, gameCode);
                             return;
                         } else {
                             JOptionPane.showMessageDialog(null, "Il gamecode inserito non ha trovato nessuna corrispondenza! Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);

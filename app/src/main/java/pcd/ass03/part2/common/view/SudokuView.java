@@ -12,11 +12,13 @@ import java.awt.event.*;
 public class SudokuView extends JFrame {
 
     private String gamecode;
+    private String nomeutente;
     private final JTextField[][] textFields;
     private final SudokuInsertChecker insertChecker;
 
-    public SudokuView(String gamecode) {
+    public SudokuView(String nomeutente, String gamecode) {
         System.out.println("Sudoku");
+        this.nomeutente = nomeutente;
         this.gamecode = gamecode;
         setTitle("Sudoku");
         setSize(600, 700);
