@@ -16,6 +16,7 @@ public class SudokuView extends JFrame {
     private final SudokuInsertChecker insertChecker;
 
     public SudokuView(String gamecode) {
+        System.out.println("Sudoku");
         this.gamecode = gamecode;
         setTitle("Sudoku");
         setSize(600, 700);
@@ -27,7 +28,7 @@ public class SudokuView extends JFrame {
 
         // Pannello superiore per il pulsante indietro
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton backButton = BackButtonFactory.createBackButton(this, new HomeView());
+        JButton backButton = BackButtonFactory.createBackButton(this);
         topPanel.add(backButton);
 
         Grid sudokuGrid = new Grid(gamecode);

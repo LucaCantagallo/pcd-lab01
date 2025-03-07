@@ -15,6 +15,7 @@ public class HomeView extends JFrame {
     private Set<String> esempiMomentanei = new HashSet<>();
 
     public HomeView() {
+        System.out.println("Home");
         setTitle("Sudoku - Home");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,8 +58,8 @@ public class HomeView extends JFrame {
                             HomeView.this, "Inserisci un gamecode per giocare con i tuoi amici!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
                     if (gameCode != null && !gameCode.trim().isEmpty()) {
                         if (!GameCodeDatabase.isPresentCode(gameCode)) {
-                            new SudokuView(gameCode);
                             dispose();
+                            new SudokuView(gameCode);
                             return;
                         } else {
                             JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -81,8 +82,8 @@ public class HomeView extends JFrame {
 
                     if (gameCode != null && !gameCode.trim().isEmpty()) {
                         if (GameCodeDatabase.isPresentCode(gameCode)) {
-                            new SudokuView(gameCode);
                             HomeView.this.dispose(); // Assicura di chiudere la finestra attuale
+                            new SudokuView(gameCode);
                             return;
                         } else {
                             JOptionPane.showMessageDialog(null, "Il gamecode inserito non ha trovato nessuna corrispondenza! Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);

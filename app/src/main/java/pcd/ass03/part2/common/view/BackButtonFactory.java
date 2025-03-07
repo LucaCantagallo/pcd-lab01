@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 public class BackButtonFactory {
 
-    public static JButton createBackButton(JFrame currentFrame, JFrame previousFrame) {
+    public static JButton createBackButton(JFrame currentFrame) {
         JButton backButton = new JButton("Indietro");
 
         backButton.addActionListener(new ActionListener() {
@@ -21,11 +21,9 @@ public class BackButtonFactory {
                 );
                 if (response == JOptionPane.YES_OPTION) {
                     currentFrame.dispose(); // Chiude la finestra attuale
-                    if (previousFrame != null) {
-                        previousFrame.setVisible(true); // Mostra la finestra precedente
-                    } else {
-                        new HomeView(); // Se non c'è una finestra specificata, torna alla Home
-                    }
+
+                    SwingUtilities.invokeLater(() -> new HomeView()); // La creazione di HomeView avviene nel thread giusto
+
                 }
             }
         });
