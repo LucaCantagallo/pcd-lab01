@@ -2,6 +2,7 @@ package pcd.ass03.part2.common.sudoku;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class GameCodeDatabase {
     private static final Map<String, Grid> gameCodes = new HashMap<>();
@@ -18,5 +19,9 @@ public class GameCodeDatabase {
 
     public static Grid getGrid(String gameCode) {
         return gameCodes.get(gameCode);
+    }
+
+    public static Set<String> getCodes() {
+        return gameCodes.keySet();
     }
 }
