@@ -1,5 +1,7 @@
 package pcd.ass03.part2.common.view;
 
+import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,6 +12,7 @@ import java.util.Set;
 public class HomeView extends JFrame {
 
     private String nomeutente = "nomeutente"; //da impl
+    private Set<String> esempiMomentanei = new HashSet<>();
 
     public HomeView() {
         setTitle("Sudoku - Home");
@@ -48,48 +51,47 @@ public class HomeView extends JFrame {
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String gameCode = JOptionPane.showInputDialog(
-                        HomeView.this, "Inserisci un gamecode per giocare con i tuoi amici!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
+                String gameCode;
+                do {
+                    gameCode = JOptionPane.showInputDialog(
+                            HomeView.this, "Inserisci un gamecode per giocare con i tuoi amici!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
+                    if (gameCode != null && !gameCode.trim().isEmpty()) {
+                        if (!GameCodeDatabase.isPresentCode(gameCode)) {
+                            new SudokuView(gameCode);
+                            dispose();
+                            return;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        }
 
-                if (gameCode != null && !gameCode.trim().isEmpty()) {
-                    new SudokuView(gameCode);
-                    dispose();
-                }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Non è stato inserito alcun gamecode! Inserire un gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
+                } while(true);
             }
         });
 
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Set<String> esempiMomentanei = new HashSet<>();
-                esempiMomentanei.add("esempio");
-                esempiMomentanei.add("aaa");
-                esempiMomentanei.add("prova");
-                esempiMomentanei.add("gamecode");
-
                 String gameCode;
                 do {
                     gameCode = JOptionPane.showInputDialog(
                             HomeView.this, "Inserisci il gamecode per accedere al Sudoku!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
 
-                    if (gameCode == null) {
-                        // Se l'utente annulla l'input, esci dal metodo
-                        return;
+                    if (gameCode != null && !gameCode.trim().isEmpty()) {
+                        if (GameCodeDatabase.isPresentCode(gameCode)) {
+                            new SudokuView(gameCode);
+                            HomeView.this.dispose(); // Assicura di chiudere la finestra attuale
+                            return;
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Il gamecode inserito non ha trovato nessuna corrispondenza! Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
-
-                    gameCode = gameCode.trim();
-
-                    if (esempiMomentanei.contains(gameCode)) {
-                        new SudokuView(gameCode);
-                        dispose();
-                        return; // Esci dopo aver aperto la nuova finestra
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Non esiste nessun Sudoku chiamato così! Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);
-                    }
-
-                } while (true); // Continua a ripetere finché non viene inserito un valore valido
+                } while (true);
             }
         });
+
 
         gbc.gridy = 2;
         gbc.gridwidth = 1;
