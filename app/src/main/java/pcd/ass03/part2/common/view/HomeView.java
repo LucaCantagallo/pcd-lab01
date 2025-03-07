@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
+import java.util.Set;
 
 public class HomeView extends JFrame {
 
@@ -59,7 +61,33 @@ public class HomeView extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Play premuto: da implementare");
+                Set<String> esempiMomentanei = new HashSet<>();
+                esempiMomentanei.add("esempio");
+                esempiMomentanei.add("aaa");
+                esempiMomentanei.add("prova");
+                esempiMomentanei.add("gamecode");
+
+                String gameCode;
+                do {
+                    gameCode = JOptionPane.showInputDialog(
+                            HomeView.this, "Inserisci il gamecode per accedere al Sudoku!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
+
+                    if (gameCode == null) {
+                        // Se l'utente annulla l'input, esci dal metodo
+                        return;
+                    }
+
+                    gameCode = gameCode.trim();
+
+                    if (esempiMomentanei.contains(gameCode)) {
+                        new SudokuView(gameCode);
+                        dispose();
+                        return; // Esci dopo aver aperto la nuova finestra
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Non esiste nessun Sudoku chiamato così! Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } while (true); // Continua a ripetere finché non viene inserito un valore valido
             }
         });
 
