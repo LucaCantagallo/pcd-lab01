@@ -18,4 +18,8 @@ public class GameCodeDatabase {
     public static boolean isPresentCode(String code) {
         return gameCodes.contains(code);
     }
+
+    public static void addGameCode(String code) {
+        gameCodes.add(code);
+    }
 }

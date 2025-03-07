@@ -126,7 +126,7 @@ public class SudokuView extends JFrame {
             }
         }
 
-        JLabel codeLabel = new JLabel("Codice Sudoku: " + sudokuGrid.getPassword(), SwingConstants.CENTER);
+        JLabel codeLabel = new JLabel("Codice Sudoku: " + sudokuGrid.getGamecode(), SwingConstants.CENTER);
         codeLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
         mainPanel.add(topPanel, BorderLayout.NORTH);

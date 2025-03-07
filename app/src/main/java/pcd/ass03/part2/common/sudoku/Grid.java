@@ -10,12 +10,13 @@ public class Grid {
 
     private GameMatrix gm;
     private Riddle r;
-    private String password;
+    private String gamecode;
 
     private Cell[][] grid;
 
-    public Grid(String password) {
-        this.password = password;
+    public Grid(String gamecode) {
+        this.gamecode = gamecode;
+        GameCodeDatabase.addGameCode(gamecode);
         this.gm = Creator.createFull();
 
         this.r = Creator.createRiddle(gm); //
@@ -40,8 +41,8 @@ public class Grid {
         return count;
     }
 
-    public String getPassword() {
-        return password;
+    public String getGamecode() {
+        return this.gamecode;
     }
 
     public Cell[][] getGrid() {
