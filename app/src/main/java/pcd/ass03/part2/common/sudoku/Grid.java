@@ -45,6 +45,14 @@ public class Grid {
 
     }
 
+    public Grid(String gamecode, String gm, String r) {
+
+
+        ///Da capire come ottenere la grid di cell considerando che abbiamo gameMatrix e Riddle come Stringhe e non come
+        //oggetti di libreria
+
+    }
+
 
 
     public int countEmpty(){

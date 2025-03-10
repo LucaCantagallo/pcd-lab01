@@ -25,13 +25,16 @@ public class Rabbit {
             channel.basicPublish("", "hello", null, message.getBytes());
             System.out.println(" [x] Sent '" + message + "'");*/
 
-    public void generateSudokuQueue(String gamecode) throws IOException {
-        channel.queueDeclare(gamecode, true, false, false, null);
+    public void setSudokuQueue(String gamecode) throws IOException {
+        String queueName = "send_"+gamecode;
+        channel.queueDeclare(queueName, true, false, false, null);
+
+
     }
 
-    public void addPlayerAsRecv(String gamecode) throws IOException {
-        channel.queueDeclare(gamecode, true, false, false, null);
-        System.out.println(" [*] New player for "+ gamecode);
+    public void getSudokuQueue(String gamecode) throws IOException {
+        String queueName = "receive_"+gamecode;
+        channel.queueDeclare(queueName, true, false, false, null);
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
@@ -42,6 +45,10 @@ public class Rabbit {
         channel.basicConsume(gamecode, true, deliverCallback, consumerTag -> { });
 
         System.out.println(" [*] Done with setup.");
+    }
+
+    public void setSudoku(){
+
     }
 
 }
