@@ -10,8 +10,10 @@ public class Recv {
     private final static String QUEUE_NAME = "hello";
 
     public static void main(String[] argv) throws Exception {
+        System.out.println(" [*] Starting Recv");
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
+        System.out.println(" [*] Connecting to RabbitMQ...");
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
@@ -21,10 +23,28 @@ public class Recv {
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
             System.out.println(" [x] Received '" + message + "'");
+
+
+            try {
+                doWork(message);
+            } catch (InterruptedException e) {
+                //
+            } finally {
+                System.out.println(" [x] Done");
+            }
+
         };
         channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
 
+        System.out.println(" [*] Done with setup.");
     }
+
+    private static void doWork(String task) throws InterruptedException {
+        for (char ch: task.toCharArray()) {
+            if (ch == '.') Thread.sleep(1000);
+        }
+    }
+
 }
 
 
