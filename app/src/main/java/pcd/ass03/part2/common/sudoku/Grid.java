@@ -8,19 +8,22 @@ import java.util.Optional;
 
 public class Grid {
 
-    private GameMatrix gm;
-    private Riddle r;
+    private String gameMatrix;
+    private String riddle;
     private String gamecode;
 
     private Cell[][] grid;
 
     public Grid(String gamecode) {
+        GameMatrix gm;
+        Riddle r;
+
         this.gamecode = gamecode;
 
-        this.gm = Creator.createFull();
+        gm = Creator.createFull();
 
 
-        this.r = Creator.createRiddle(gm); //
+        r = Creator.createRiddle(gm); //
 
         grid = new Cell[9][9];
         for(int row=0; row<9; row++){
@@ -29,6 +32,10 @@ public class Grid {
             }
         }
         GameCodeDatabase.addGameCode(gamecode, this);
+
+        this.gameMatrix=gm.toString();
+        this.riddle=gm.toString();
+
         System.out.println("__________________________________________PROVAPROVAPROVA");
         System.out.println("GM String");
         System.out.println(gm.toString());
@@ -38,21 +45,7 @@ public class Grid {
 
     }
 
-    public Grid(String gamecode, String gmMessage, String rMessage){
-        this.gamecode = gamecode;
 
-
-
-        this.r = Creator.createRiddle(gm); //
-
-        grid = new Cell[9][9];
-        for(int row=0; row<9; row++){
-            for(int col=0; col<9; col++){
-                grid[row][col] = new Cell(!r.getWritable(row,col)? Optional.of((int) gm.get(row,col)) : Optional.empty(), gm.get(row,col));
-            }
-        }
-        GameCodeDatabase.addGameCode(gamecode, this);
-    }
 
     public int countEmpty(){
         int count = 0;
@@ -78,17 +71,11 @@ public class Grid {
         return grid[row][col];
     }
 
-    public GameMatrix getGm() {
-        return gm;
-    }
     public String getGmMessage(){
-        return gm.toString();
+        return gameMatrix;
     }
 
-    public Riddle getR() {
-        return r;
-    }
     public String getRMessage(){
-        return r.toString();
+        return riddle;
     }
 }
