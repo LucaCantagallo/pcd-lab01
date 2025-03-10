@@ -19,6 +19,30 @@ public class Grid {
 
         this.gm = Creator.createFull();
 
+
+        this.r = Creator.createRiddle(gm); //
+
+        grid = new Cell[9][9];
+        for(int row=0; row<9; row++){
+            for(int col=0; col<9; col++){
+                grid[row][col] = new Cell(!r.getWritable(row,col)? Optional.of((int) gm.get(row,col)) : Optional.empty(), gm.get(row,col));
+            }
+        }
+        GameCodeDatabase.addGameCode(gamecode, this);
+        System.out.println("__________________________________________PROVAPROVAPROVA");
+        System.out.println("GM String");
+        System.out.println(gm.toString());
+        System.out.println("__________________________________________PROVAPROVAPROVA");
+        System.out.println("R String");
+        System.out.println(r.toString());
+
+    }
+
+    public Grid(String gamecode, String gmMessage, String rMessage){
+        this.gamecode = gamecode;
+
+
+
         this.r = Creator.createRiddle(gm); //
 
         grid = new Cell[9][9];
@@ -57,8 +81,14 @@ public class Grid {
     public GameMatrix getGm() {
         return gm;
     }
+    public String getGmMessage(){
+        return gm.toString();
+    }
 
     public Riddle getR() {
         return r;
+    }
+    public String getRMessage(){
+        return r.toString();
     }
 }

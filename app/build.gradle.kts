@@ -51,7 +51,8 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "pcd/ass03/part2/common/ProvaRabbit/Recv"
+    mainClass = "pcd/ass03/part2/common/view/HomeView"
+    //mainClass = "pcd/ass03/part2/common/ProvaRabbit/Recv"
 }
 
 tasks.named<Test>("test") {

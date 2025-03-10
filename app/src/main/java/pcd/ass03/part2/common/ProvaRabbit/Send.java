@@ -11,11 +11,11 @@ public class Send {
         factory.setHost("localhost");
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+                channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
-            String message = String.join(" ", argv);
-            channel.basicPublish("", "hello", null, message.getBytes());
-            System.out.println(" [x] Sent '" + message + "'");
+                String message = String.join(" ", argv);
+                channel.basicPublish("", "hello", null, message.getBytes());
+                System.out.println(" [x] Sent '" + message + "'");
         }
     }
 }
