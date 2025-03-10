@@ -1,8 +1,7 @@
-package pcd.ass03.part2.common.communication;
+package pcd.ass03.part2.common.communicationOldVersion;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 
 public interface RMICommunicationService extends Remote {
     void createGame(String gameCode) throws RemoteException;

@@ -1,4 +1,4 @@
-package pcd.ass03.part2.common.communication;
+package pcd.ass03.part2.common.communicationOldVersion;
 
 import com.rabbitmq.client.*;
 import java.io.IOException;
