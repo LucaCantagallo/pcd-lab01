@@ -53,16 +53,10 @@ public class Grid {
         int index = 0;
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                // Trova il prossimo carattere valido (ignorando \n e \r)
-                while (index < gm.length() && (gm.charAt(index) == '\n' || gm.charAt(index) == '\r')) {
-                    index++;
-                }
-
-                // Se ci sono ancora caratteri validi, assegnali, altrimenti usa uno spazio
-                char valueGm = (index < gm.length()) ? gm.charAt(index++) : ' ';
+                char valueGm = (index < gm.length()) ? gm.charAt(index) : ' ';
                 char valueR = (index < r.length()) ? gm.charAt(index++) : ' ';
-
-                grid[row][col] = new Cell(valueR == ' '  || valueR == '_' ? Optional.empty() : Optional.of(Character.getNumericValue(valueR)), Character.getNumericValue(valueGm));
+                System.out.println(valueR);
+                grid[row][col] = new Cell(!Character.isDigit(valueR) ? Optional.empty() : Optional.of(Character.getNumericValue(valueGm)), Character.getNumericValue(valueGm));
             }
         }
         GameCodeDatabase.addGameCode(gamecode, this);
