@@ -34,23 +34,38 @@ public class Grid {
         GameCodeDatabase.addGameCode(gamecode, this);
 
         this.gameMatrix=gm.toString();
-        this.riddle=gm.toString();
+        this.riddle=r.toString();
 
         System.out.println("__________________________________________PROVAPROVAPROVA");
         System.out.println("GM String");
-        System.out.println(gm.toString());
+        System.out.println(gm);
         System.out.println("__________________________________________PROVAPROVAPROVA");
         System.out.println("R String");
-        System.out.println(r.toString());
+        System.out.println(r);
 
     }
 
     public Grid(String gamecode, String gm, String r) {
+        this.gamecode = gamecode;
+        this.gameMatrix=gm;
+        this.riddle=gm;
+        grid = new Cell[9][9];
+        int index = 0;
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                // Trova il prossimo carattere valido (ignorando \n e \r)
+                while (index < gm.length() && (gm.charAt(index) == '\n' || gm.charAt(index) == '\r')) {
+                    index++;
+                }
 
+                // Se ci sono ancora caratteri validi, assegnali, altrimenti usa uno spazio
+                char valueGm = (index < gm.length()) ? gm.charAt(index++) : ' ';
+                char valueR = (index < r.length()) ? gm.charAt(index++) : ' ';
 
-        ///Da capire come ottenere la grid di cell considerando che abbiamo gameMatrix e Riddle come Stringhe e non come
-        //oggetti di libreria
-
+                grid[row][col] = new Cell(valueR == ' '  || valueR == '_' ? Optional.empty() : Optional.of(Character.getNumericValue(valueR)), Character.getNumericValue(valueGm));
+            }
+        }
+        GameCodeDatabase.addGameCode(gamecode, this);
     }
 
 
