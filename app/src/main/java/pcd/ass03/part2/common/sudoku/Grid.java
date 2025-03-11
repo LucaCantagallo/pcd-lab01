@@ -95,4 +95,14 @@ public class Grid {
     public String getRMessage(){
         return riddle;
     }
+
+    public String getGmRMessage(){
+        return gameMatrix + "," + riddle;
+    }
+
+    public void seperGmRMessage(String message){
+        String[] parts = message.split(",");
+        this.gameMatrix = parts[0];
+        this.riddle = parts[1];
+    }
 }
