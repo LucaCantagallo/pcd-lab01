@@ -6,6 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 public class Rabbit {
@@ -19,36 +20,38 @@ public class Rabbit {
         this.channel = connection.createChannel();
     }
 
-        /*    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-
-            String message = String.join(" ", argv);
-            channel.basicPublish("", "hello", null, message.getBytes());
-            System.out.println(" [x] Sent '" + message + "'");*/
-
-    public void setSudokuQueue(String gamecode) throws IOException {
-        String queueName = "send_"+gamecode;
-        channel.queueDeclare(queueName, true, false, false, null);
-
-
-    }
-
-    public void getSudokuQueue(String gamecode) throws IOException {
-        String queueName = "receive_"+gamecode;
+    public void receiveMessage(String gamecode) throws IOException {
+        String queueName = gamecode;
         channel.queueDeclare(queueName, true, false, false, null);
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), "UTF-8");
-            System.out.println(" [x] Received '" + message + "'");
-
-
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            System.out.println(" [x] Received: " + message);
+            //qui si crea griglia e si mette nel db?
         };
-        channel.basicConsume(gamecode, true, deliverCallback, consumerTag -> { });
 
-        System.out.println(" [*] Done with setup.");
+        channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {});
+        System.out.println(" [*] Listening on queue: " + queueName);
     }
 
-    public void setSudoku(){
+    public void sendMessage(String gamecode, String message) throws IOException {
+        String queueName = gamecode;
 
+        // Assicuriamoci che la coda esista prima di inviare il messaggio
+        channel.queueDeclare(queueName, true, false, false, null);
+
+        // Pubblica il messaggio sulla coda
+        channel.basicPublish("", queueName, null, message.getBytes(StandardCharsets.UTF_8));
+        System.out.println(" [x] Sent: '" + message + "' to " + queueName);
+    }
+
+    public void close() throws IOException, TimeoutException {
+        if (channel != null) {
+            channel.close();
+        }
+        if (connection != null) {
+            connection.close();
+        }
     }
 
 }
