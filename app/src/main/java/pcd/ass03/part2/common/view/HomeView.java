@@ -1,19 +1,31 @@
 package pcd.ass03.part2.common.view;
 
+import pcd.ass03.part2.common.CommunicationProva.Rabbit;
 import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
+import pcd.ass03.part2.common.sudoku.HomeAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 public class HomeView extends JFrame {
 
     private String nomeutente = "nomeutente"; //da impl
+    private Rabbit rabbit;
 
-    public HomeView() {
+    public HomeView()  {
+        try {
+            this.rabbit = new Rabbit();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+
+
         System.out.println("Home");
         setTitle("Sudoku - Home");
         setSize(600, 600);
@@ -64,7 +76,8 @@ public class HomeView extends JFrame {
                     if (!gameCode.trim().isEmpty()) {
                         if (!GameCodeDatabase.isPresentCode(gameCode)) {
                             dispose();
-                            new SudokuView(nomeutente, gameCode);
+
+                            new SudokuView(nomeutente, gameCode, HomeAction.CREATE, rabbit);
                             return;
                         } else {
                             JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -94,7 +107,7 @@ public class HomeView extends JFrame {
                     if (gameCode != null && !gameCode.trim().isEmpty()) {
                         if (GameCodeDatabase.isPresentCode(gameCode)) {
                             HomeView.this.dispose(); // Assicura di chiudere la finestra attuale
-                            new SudokuView(nomeutente, gameCode);
+                            new SudokuView(nomeutente, gameCode, HomeAction.PLAY, rabbit);
                             return;
                         } else {
                             JOptionPane.showMessageDialog(null, "Il gamecode inserito non ha trovato nessuna corrispondenza! Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);

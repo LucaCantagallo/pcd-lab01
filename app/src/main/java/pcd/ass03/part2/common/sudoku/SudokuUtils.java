@@ -2,10 +2,10 @@ package pcd.ass03.part2.common.sudoku;
 
 import java.util.Optional;
 
-public class SudokuInsertChecker {
+public class SudokuUtils {
     private Grid grid;
 
-    public SudokuInsertChecker(Grid grid) {
+    public SudokuUtils(Grid grid) {
         this.grid = grid;
     }
 
@@ -16,7 +16,6 @@ public class SudokuInsertChecker {
         // Confronta il valore inserito con il valore nascosto della cella
         if (cell.getHiddenValue() == insertedValue) {
             cell.setValue(Optional.of(insertedValue));
-            System.out.println("Corretto");
             System.out.println(grid.countEmpty());
             return true; // Valore corretto
         }

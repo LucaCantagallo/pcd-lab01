@@ -3,7 +3,7 @@ package pcd.ass03.part2.common.CommunicationProva;
 public class Translation {
 
 
-    public static String getGmRMessage(String gameMatrix, String riddle) {
+    public static String togetherGmR(String gameMatrix, String riddle) {
         return gameMatrix + "," + riddle;
     }
 

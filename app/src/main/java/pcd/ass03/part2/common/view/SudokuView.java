@@ -1,24 +1,23 @@
 package pcd.ass03.part2.common.view;
 
-import pcd.ass03.part2.common.sudoku.Cell;
-import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
-import pcd.ass03.part2.common.sudoku.Grid;
-import pcd.ass03.part2.common.sudoku.SudokuInsertChecker;
+import pcd.ass03.part2.common.CommunicationProva.Rabbit;
+import pcd.ass03.part2.common.CommunicationProva.Translation;
+import pcd.ass03.part2.common.sudoku.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class SudokuView extends JFrame {
 
     private String gamecode;
     private String nomeutente;
     private final JTextField[][] textFields;
-    private final SudokuInsertChecker insertChecker;
+    private final SudokuUtils insertChecker;
 
-    public SudokuView(String nomeutente, String gamecode) {
-        System.out.println("Sudoku");
+    public SudokuView(String nomeutente, String gamecode, HomeAction homeAction, Rabbit rabbit) {
         this.nomeutente = nomeutente;
         this.gamecode = gamecode;
         setTitle("Sudoku");
@@ -35,13 +34,40 @@ public class SudokuView extends JFrame {
         topPanel.add(backButton);
 
         Grid sudokuGrid;
-        if(GameCodeDatabase.isPresentCode(gamecode)){
+        if(homeAction.equals(HomeAction.CREATE)) {
+            sudokuGrid = new Grid(gamecode);
+            try {
+                rabbit.sendMessage(gamecode, Translation.togetherGmR(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+                System.out.println("Messaggio inviato con successo!");
+            } catch (IOException e) {
+                System.out.println("Messaggio NON inviato con successo!");
+                throw new RuntimeException(e);
+            }
+        } else {
+
+            try {
+                String message = rabbit.receiveMessage(gamecode);
+                System.out.println("Messaggio ricevuto con successo!");
+                if(message!=""){
+                    sudokuGrid = new Grid(gamecode, Translation.getGameMatrix(message), Translation.getRiddle(message));
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            sudokuGrid = GameCodeDatabase.getGrid(gamecode);
+        }
+
+
+
+
+        /*if(GameCodeDatabase.isPresentCode(gamecode)){
             sudokuGrid = GameCodeDatabase.getGrid(gamecode);
         } else {
             sudokuGrid = new Grid(gamecode);
-        }
+        }*/
 
-        insertChecker = new SudokuInsertChecker(sudokuGrid);
+        insertChecker = new SudokuUtils(sudokuGrid);
 
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));
         textFields = new JTextField[9][9];
@@ -117,10 +143,11 @@ public class SudokuView extends JFrame {
 
                 int finalRow = row;
                 int finalCol = col;
+                Grid finalSudokuGrid = sudokuGrid;
                 textField.addFocusListener(new FocusAdapter() {
                     @Override
                     public void focusLost(FocusEvent e) {
-                        if (sudokuGrid.getCell(finalRow, finalCol).isShowed()) {
+                        if (finalSudokuGrid.getCell(finalRow, finalCol).isShowed()) {
                             textField.setBackground(Palette.getColor(MyColorList.RIGHTCELL));
                         } else {
                             textField.setBackground(Palette.getColor(MyColorList.WHITE));
