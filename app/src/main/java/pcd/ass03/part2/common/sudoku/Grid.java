@@ -62,8 +62,6 @@ public class Grid {
         GameCodeDatabase.addGameCode(gamecode, this);
     }
 
-
-
     public int countEmpty(){
         int count = 0;
         for(int row=0; row<9; row++){
