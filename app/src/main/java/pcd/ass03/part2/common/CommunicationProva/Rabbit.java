@@ -39,7 +39,7 @@ public class Rabbit {
         channel.queuePurge(queueName);
 
         channel.basicPublish("", queueName, null, message.getBytes(StandardCharsets.UTF_8));
-        System.out.println(" [x] Sent: '" + message + "' to " + queueName);
+        //System.out.println(" [x] Sent: '" + message + "' to " + queueName);
     }
 
     public boolean doesQueueExist(String queueName) {
