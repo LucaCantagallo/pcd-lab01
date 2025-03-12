@@ -1,6 +1,7 @@
 package pcd.ass03.part2.common.view;
 
 import pcd.ass03.part2.common.CommunicationProva.HandlerMessageDBGameCode;
+import pcd.ass03.part2.common.CommunicationProva.HandlerSingleSudoku;
 import pcd.ass03.part2.common.CommunicationProva.Rabbit;
 import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
 import pcd.ass03.part2.common.sudoku.HomeAction;
@@ -25,7 +26,9 @@ public class HomeView extends JFrame {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
+        HandlerSingleSudoku.initialize(rabbit);
         HandlerMessageDBGameCode.initialize(rabbit);
+        System.out.println(HandlerMessageDBGameCode.getMotherString());
 
 
         System.out.println("Home");

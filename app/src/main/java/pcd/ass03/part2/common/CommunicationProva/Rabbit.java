@@ -61,20 +61,11 @@ public class Rabbit {
         // Pulisce la coda prima di inserire il nuovo messaggio, lasciando sempre solo l'ultimo
         channel.queuePurge(queueName);
 
-        channel.basicPublish("", queueName, null, message.getBytes(StandardCharsets.UTF_8));
+        channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
         //System.out.println(" [x] Sent: '" + message + "' to " + queueName);
     }
 
-    public boolean doesQueueExist(String queueName) {
-        try {
-            // Tentiamo di accedere alla coda passivamente, senza modificarla
-            channel.queueDeclarePassive(queueName);
-            return true; // La coda esiste
-        } catch (IOException e) {
-            // Se c'è un'eccezione, significa che la coda non esiste
-            return false;
-        }
-    }
+
 
     public void close() throws IOException, TimeoutException {
         if (channel != null) channel.close();

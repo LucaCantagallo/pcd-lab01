@@ -1,7 +1,7 @@
 package pcd.ass03.part2.common.view;
 
+import pcd.ass03.part2.common.CommunicationProva.HandlerSingleSudoku;
 import pcd.ass03.part2.common.CommunicationProva.Rabbit;
-import pcd.ass03.part2.common.CommunicationProva.SingleSudokuTranslation;
 import pcd.ass03.part2.common.sudoku.*;
 
 import javax.swing.*;
@@ -36,25 +36,9 @@ public class SudokuView extends JFrame {
         Grid sudokuGrid;
         if(homeAction.equals(HomeAction.CREATE)) {
             sudokuGrid = new Grid(gamecode);
-            try {
-                rabbit.sendMessage(gamecode, SingleSudokuTranslation.togetherGmR(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
-                System.out.println("Messaggio inviato con successo!");
-            } catch (IOException e) {
-                System.out.println("Messaggio NON inviato con successo!");
-                throw new RuntimeException(e);
-            }
+            HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
-
-            try {
-                String message = rabbit.receiveMessage(gamecode);
-                System.out.println("Messaggio ricevuto con successo!");
-                if(message!=""){
-                    sudokuGrid = new Grid(gamecode, SingleSudokuTranslation.getGameMatrix(message), SingleSudokuTranslation.getRiddle(message));
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
+            HandlerSingleSudoku.generateGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));
             sudokuGrid = GameCodeDatabase.getGrid(gamecode);
         }
 
