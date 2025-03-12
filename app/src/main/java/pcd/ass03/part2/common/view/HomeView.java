@@ -1,5 +1,6 @@
 package pcd.ass03.part2.common.view;
 
+import pcd.ass03.part2.common.CommunicationProva.HandlerMessageDBGameCode;
 import pcd.ass03.part2.common.CommunicationProva.Rabbit;
 import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
 import pcd.ass03.part2.common.sudoku.HomeAction;
@@ -24,6 +25,7 @@ public class HomeView extends JFrame {
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
+        HandlerMessageDBGameCode.initialize(rabbit);
 
 
         System.out.println("Home");
@@ -74,7 +76,8 @@ public class HomeView extends JFrame {
                     }
 
                     if (!gameCode.trim().isEmpty()) {
-                        if (!GameCodeDatabase.isPresentCode(gameCode)) {
+                        if (!HandlerMessageDBGameCode.isPresent(gameCode)) {
+                            HandlerMessageDBGameCode.addGameCode(gameCode);
                             dispose();
 
                             new SudokuView(nomeutente, gameCode, HomeAction.CREATE, rabbit);
@@ -105,7 +108,7 @@ public class HomeView extends JFrame {
                     }
 
                     if (gameCode != null && !gameCode.trim().isEmpty()) {
-                        if (GameCodeDatabase.isPresentCode(gameCode)) {
+                        if (HandlerMessageDBGameCode.isPresent(gameCode)) {
                             HomeView.this.dispose(); // Assicura di chiudere la finestra attuale
                             new SudokuView(nomeutente, gameCode, HomeAction.PLAY, rabbit);
                             return;

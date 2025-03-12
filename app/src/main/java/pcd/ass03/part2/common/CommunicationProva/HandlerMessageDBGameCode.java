@@ -7,11 +7,6 @@ public class HandlerMessageDBGameCode {
 
     public static void initialize(Rabbit rabbit) {
         HandlerMessageDBGameCode.rabbit = rabbit;
-        try {
-            HandlerMessageDBGameCode.rabbit.sendGlobalGameCodes("");
-        } catch (IOException e) {
-            System.out.println("Non è stata inizializzata correttamente la lista dei gamecode!");
-        }
     }
 
     public static boolean isPresent(String gamecode) {
