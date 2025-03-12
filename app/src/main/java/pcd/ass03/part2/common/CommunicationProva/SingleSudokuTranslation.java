@@ -1,6 +1,6 @@
 package pcd.ass03.part2.common.CommunicationProva;
 
-public class Translation {
+public class SingleSudokuTranslation {
 
     private static final String SEPARATOR = ",";
 
