@@ -16,7 +16,7 @@ public class SudokuUtils {
         // Confronta il valore inserito con il valore nascosto della cella
         if (cell.getHiddenValue() == insertedValue) {
             cell.setValue(Optional.of(insertedValue));
-            System.out.println(grid.countEmpty());
+            grid.setValueCell(row,col,insertedValue);
             return true; // Valore corretto
         }
         //Da qui in futuro potremmo contare gli errori

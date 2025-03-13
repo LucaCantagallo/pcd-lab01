@@ -63,8 +63,9 @@ public class HandlerSingleSudoku {
 
 
 
-    public static void updateMessage(Grid sudokuGrid){
-        rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+    public static void updateMessage(String gamecode){
+        Grid sudokuGrid = GameCodeDatabase.getGrid(gamecode);
+        rabbit.updateMessageSudoku(gamecode, HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
     }
 
 }

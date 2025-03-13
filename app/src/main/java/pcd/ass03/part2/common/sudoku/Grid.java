@@ -113,6 +113,10 @@ public class Grid {
         return grid[row][col];
     }
 
+    public void setValueCell(int value, int row, int col){
+        this.getCell(row, col).setValue(Optional.of(value));
+    }
+
     public String getGmMessage(){
         return gameMatrix;
     }
