@@ -114,7 +114,7 @@ public class SudokuView extends JFrame {
                                     if (insertChecker.checkWinning()) {
                                         JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
                                     }
-                                    HandlerSingleSudoku.updateMessage(sudokuGrid);
+                                    HandlerSingleSudoku.updateMessage(sudokuGrid, textFields);
                                 } else {
                                     JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
                                     e.consume();
@@ -155,5 +155,6 @@ public class SudokuView extends JFrame {
 
         add(mainPanel);
         setVisible(true);
+        HandlerSingleSudokuView.setSudokuView(this);
     }
 }

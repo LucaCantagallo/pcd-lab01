@@ -1,7 +1,10 @@
 package pcd.ass03.part2.common.CommunicationProva;
 
 import pcd.ass03.part2.common.sudoku.Grid;
+import pcd.ass03.part2.common.view.HandlerSingleSudokuView;
+import pcd.ass03.part2.common.view.SudokuView;
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class HandlerSingleSudoku {
@@ -58,7 +61,9 @@ public class HandlerSingleSudoku {
 
 
 
-    public static void updateMessage(Grid sudokuGrid){
-            rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+    public static void updateMessage(Grid sudokuGrid, JTextField[][] textfields){
+        rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+        HandlerSingleSudokuView.updateGridUI(sudokuGrid, textfields);
     }
+
 }
