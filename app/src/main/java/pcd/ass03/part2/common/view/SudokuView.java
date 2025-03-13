@@ -45,11 +45,7 @@ public class SudokuView extends JFrame {
 
 
 
-        /*if(GameCodeDatabase.isPresentCode(gamecode)){
-            sudokuGrid = GameCodeDatabase.getGrid(gamecode);
-        } else {
-            sudokuGrid = new Grid(gamecode);
-        }*/
+
 
         insertChecker = new SudokuUtils(sudokuGrid);
 
@@ -114,7 +110,7 @@ public class SudokuView extends JFrame {
                                     if (insertChecker.checkWinning()) {
                                         JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
                                     }
-                                    HandlerSingleSudoku.updateMessage(sudokuGrid, textFields);
+                                    HandlerSingleSudoku.updateMessage(sudokuGrid);
                                 } else {
                                     JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
                                     e.consume();
@@ -156,6 +152,7 @@ public class SudokuView extends JFrame {
         add(mainPanel);
         setVisible(true);
         HandlerSingleSudokuView.setSudokuView(this);
+        System.out.println("DATABASE: "+GameCodeDatabase.getCodes());
     }
 
     public JTextField[][] getTextFields() {

@@ -9,7 +9,6 @@ public class TestHandler {
         try {
             rabbit = new Rabbit();
         } catch (Exception e) {
-            System.out.println("Eccezione a istanziare");
         }
 
         HandlerMessageDBGameCode.initialize(rabbit);
@@ -25,11 +24,7 @@ public class TestHandler {
         HandlerMessageDBGameCode.addGameCode("car");
         HandlerMessageDBGameCode.addGameCode("curcuma");
         HandlerMessageDBGameCode.removeGameCode("carl");
-        System.out.println(HandlerMessageDBGameCode.getMotherString());
-        System.out.println(HandlerMessageDBGameCode.isPresent("lupo"));
-        System.out.println(HandlerMessageDBGameCode.getMotherString());
-        //System.out.println(HandlerMessageDBGameCode.isPresent("callo"));
-        //System.out.println(HandlerMessageDBGameCode.getMotherString());
+
 
 
     }

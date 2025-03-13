@@ -63,7 +63,7 @@ public class HandlerSingleSudoku {
 
 
 
-    public static void updateMessage(Grid sudokuGrid, JTextField[][] textfields){
+    public static void updateMessage(Grid sudokuGrid){
         rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
     }
 

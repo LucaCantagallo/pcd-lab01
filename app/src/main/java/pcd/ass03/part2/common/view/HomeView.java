@@ -31,7 +31,6 @@ public class HomeView extends JFrame {
         System.out.println(HandlerMessageDBGameCode.getMotherString());
 
 
-        System.out.println("Home");
         setTitle("Sudoku - Home");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
