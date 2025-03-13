@@ -13,7 +13,7 @@ public class SudokuView extends JFrame {
 
     private String gamecode;
     private String nomeutente;
-    private final JTextField[][] textFields;
+    private JTextField[][] textFields;
     private final SudokuUtils insertChecker;
 
     public SudokuView(String nomeutente, String gamecode, HomeAction homeAction, Rabbit rabbit) {
@@ -156,5 +156,13 @@ public class SudokuView extends JFrame {
         add(mainPanel);
         setVisible(true);
         HandlerSingleSudokuView.setSudokuView(this);
+    }
+
+    public JTextField[][] getTextFields() {
+        return textFields;
+    }
+
+    public void setTextFields(JTextField[][] textFields) {
+        this.textFields = textFields;
     }
 }

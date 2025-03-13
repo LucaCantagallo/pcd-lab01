@@ -1,5 +1,6 @@
 package pcd.ass03.part2.common.CommunicationProva;
 
+import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
 import pcd.ass03.part2.common.sudoku.Grid;
 import pcd.ass03.part2.common.view.HandlerSingleSudokuView;
 import pcd.ass03.part2.common.view.SudokuView;
@@ -55,6 +56,7 @@ public class HandlerSingleSudoku {
     public static void startListening(String gamecode) {
         rabbit.listenForUpdates(gamecode, message -> {
             generateGrid(gamecode, message);
+            HandlerSingleSudokuView.updateGridUI(GameCodeDatabase.getGrid(gamecode));
             System.out.println("Aggiornata la griglia con: " + message);
         });
     }
@@ -63,7 +65,6 @@ public class HandlerSingleSudoku {
 
     public static void updateMessage(Grid sudokuGrid, JTextField[][] textfields){
         rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
-        HandlerSingleSudokuView.updateGridUI(sudokuGrid, textfields);
     }
 
 }
