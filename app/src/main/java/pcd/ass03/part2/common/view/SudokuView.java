@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 
 public class SudokuView extends JFrame {
 
@@ -36,12 +35,12 @@ public class SudokuView extends JFrame {
         Grid sudokuGrid;
         if(homeAction.equals(HomeAction.CREATE)) {
             sudokuGrid = new Grid(gamecode);
-            HandlerSingleSudoku.startListening(gamecode);
             HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
             HandlerSingleSudoku.generateGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));
             sudokuGrid = GameCodeDatabase.getGrid(gamecode);
         }
+        HandlerSingleSudoku.startListening(gamecode);
 
 
 
@@ -108,13 +107,14 @@ public class SudokuView extends JFrame {
                             char c = e.getKeyChar();
                             if (Character.isDigit(c)) {
                                 int insertedValue = Character.getNumericValue(c);
-                                boolean isCorrect = insertChecker.checkInsert(rowIndex, colIndex, insertedValue);
+                                boolean isCorrect = insertChecker.checkAndInsertValue(rowIndex, colIndex, insertedValue);
                                 if (isCorrect) {
                                     textField.setText(String.valueOf(insertedValue));
                                     textField.setEditable(false);
                                     if (insertChecker.checkWinning()) {
                                         JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
                                     }
+                                    HandlerSingleSudoku.updateMessage(sudokuGrid);
                                 } else {
                                     JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
                                     e.consume();

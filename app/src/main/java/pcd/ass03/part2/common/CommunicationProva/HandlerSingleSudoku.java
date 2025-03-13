@@ -55,4 +55,10 @@ public class HandlerSingleSudoku {
             System.out.println("Aggiornata la griglia con: " + message);
         });
     }
+
+
+
+    public static void updateMessage(Grid sudokuGrid){
+            rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+    }
 }

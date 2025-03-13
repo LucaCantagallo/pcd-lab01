@@ -10,7 +10,7 @@ public class SudokuUtils {
     }
 
     // Metodo per verificare se l'inserimento è corretto
-    public boolean checkInsert(int row, int col, int insertedValue) {
+    public boolean checkAndInsertValue(int row, int col, int insertedValue) {
         Cell cell = grid.getCell(row, col);
 
         // Confronta il valore inserito con il valore nascosto della cella

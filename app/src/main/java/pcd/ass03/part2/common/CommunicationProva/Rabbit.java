@@ -67,7 +67,7 @@ public class Rabbit {
     }
 
     public void listenForUpdates(String gamecode, Consumer<String> callback){
-        String queueName = gamecode;
+        String queueName = gamecode+"_updates";
         try {
             channel.queueDeclare(queueName, true, false, false, null);
             channel.basicConsume(queueName, true, (consumerTag, message) -> {
@@ -77,8 +77,19 @@ public class Rabbit {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void updateMessageSudoku(String gamecode, String message) {
+        String queueName = gamecode + "_updates";
+        try {
+            channel.queueDeclare(queueName, true, false, false, null);
 
+            // Invia il messaggio SENZA cancellare la coda (per tenere traccia degli aggiornamenti)
+            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
+            System.out.println("🔄 Aggiornamento inviato a " + queueName + ": " + message);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nell'aggiornamento della coda " + queueName, e);
+        }
     }
 
 
