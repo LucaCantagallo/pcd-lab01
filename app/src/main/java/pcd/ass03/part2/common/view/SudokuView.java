@@ -36,6 +36,7 @@ public class SudokuView extends JFrame {
         Grid sudokuGrid;
         if(homeAction.equals(HomeAction.CREATE)) {
             sudokuGrid = new Grid(gamecode);
+            HandlerSingleSudoku.startListening(gamecode);
             HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
             HandlerSingleSudoku.generateGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));

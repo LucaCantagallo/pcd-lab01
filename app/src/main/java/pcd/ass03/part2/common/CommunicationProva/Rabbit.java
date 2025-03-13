@@ -5,6 +5,7 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 public class Rabbit {
 
@@ -64,6 +65,22 @@ public class Rabbit {
         channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
         //System.out.println(" [x] Sent: '" + message + "' to " + queueName);
     }
+
+    public void listenForUpdates(String gamecode, Consumer<String> callback){
+        String queueName = gamecode;
+        try {
+            channel.queueDeclare(queueName, true, false, false, null);
+            channel.basicConsume(queueName, true, (consumerTag, message) -> {
+                String receivedMessage = new String(message.getBody(), StandardCharsets.UTF_8);
+                callback.accept(receivedMessage);
+            }, consumerTag -> {});
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
 
 
 

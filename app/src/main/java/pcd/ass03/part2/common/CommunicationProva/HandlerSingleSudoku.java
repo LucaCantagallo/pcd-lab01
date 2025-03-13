@@ -48,4 +48,11 @@ public class HandlerSingleSudoku {
     public static String turnMessageToRiddleString(String message) {
         return message.split(SEPARATOR)[1];
     }
+
+    public static void startListening(String gamecode) {
+        rabbit.listenForUpdates(gamecode, message -> {
+            generateGrid(gamecode, message);
+            System.out.println("Aggiornata la griglia con: " + message);
+        });
+    }
 }
