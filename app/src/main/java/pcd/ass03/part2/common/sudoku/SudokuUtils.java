@@ -12,11 +12,13 @@ public class SudokuUtils {
 
         // Confronta il valore inserito con il valore nascosto della cella
         if (cell.getHiddenValue() == insertedValue) {
-            //cell.setValue(Optional.of(insertedValue));
-            sudokuGrid.setValueCell(row,col,insertedValue);
+            cell.setValue(Optional.of(insertedValue));
+            sudokuGrid.setValueRiddle(row, col, (byte) insertedValue);
+            //sudokuGrid.setValueCell(row,col,insertedValue);
             HandlerSingleSudoku.sendMessage(sudokuGrid);
             HandlerSingleSudoku.updateMessage(sudokuGrid);
             GameCodeDatabase.addGameCode(sudokuGrid.getGamecode(), sudokuGrid);
+            System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
             return true; // Valore corretto
         }
         //Da qui in futuro potremmo contare gli errori

@@ -59,19 +59,16 @@ public class HandlerSingleSudoku {
 
     public static void startListening(String gamecode) {
         rabbit.listenForUpdates(gamecode, callback -> {
-            System.out.println("CIAO");
-
             Grid sudokuGrid = GameCodeDatabase.getGrid(gamecode);
-            System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
+            //System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
             HandlerSingleSudokuView.updateGridUI(sudokuGrid);
-            System.out.println("Aggiornata la griglia con: " + callback);
+            System.out.println("Aggiornata la griglia da Listening");
         });
     }
 
 
 
     public static void updateMessage(Grid sudokuGrid){
-        System.out.println("NOME CODA: "+sudokuGrid.getGamecode());
         rabbit.updateMessageSudoku(sudokuGrid.getGamecode());
     }
 
