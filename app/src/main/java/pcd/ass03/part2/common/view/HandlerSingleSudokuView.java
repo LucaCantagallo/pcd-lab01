@@ -19,7 +19,6 @@ public class HandlerSingleSudokuView {
         if (sudokuView != null){
 
             SwingUtilities.invokeLater(() -> {  // Esegui nel thread della GUI
-                System.out.println("Invock later");
                 JTextField textFields[][] = sudokuView.getTextFields();
                 for (int row = 0; row < 9; row++) {
                     for (int col = 0; col < 9; col++) {

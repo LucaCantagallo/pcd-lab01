@@ -74,7 +74,7 @@ public class Rabbit {
                 String receivedMessage = new String(message.getBody(), StandardCharsets.UTF_8);
                 callback.accept(receivedMessage);
             }, consumerTag -> {});
-            System.out.println("Percepito qualcosa");
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
