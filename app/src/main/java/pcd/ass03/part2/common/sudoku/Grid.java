@@ -42,8 +42,9 @@ public class Grid {
     }
 
     public Grid(String gamecode, String gm, String r){
+        this.gamecode=gamecode;
         this.gameMatrix=gm;
-        this.riddle=gm;
+        this.riddle=r;
 
 
         List<String> gmList = new ArrayList<>();
