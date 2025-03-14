@@ -22,12 +22,12 @@ public class HandlerSingleSudokuView {
                 for (int row = 0; row < 9; row++) {
                     for (int col = 0; col < 9; col++) {
                         Cell cell = sudokuGrid.getCell(row, col);
-                        //if (!cell.isShowed()) {
+                        if (!cell.isShowed()) {
                             textFields[row][col].setText(cell.getValue().map(String::valueOf).orElse(""));
-                        //}
+                        }
                     }
                 }
-                sudokuView.setTextFields(textFields);
+                //sudokuView.setTextFields(textFields);
                 sudokuView.revalidate();
                 sudokuView.repaint();
             });

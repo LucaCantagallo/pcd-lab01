@@ -33,7 +33,6 @@ public class Grid {
                 grid[row][col] = new Cell(!r.getWritable(row,col)? Optional.of((int) gm.get(row,col)) : Optional.empty(), gm.get(row,col));
             }
         }
-        GameCodeDatabase.addGameCode(gamecode, this);
 
         this.gameMatrix=gm.toString();
         this.riddle=r.toString();
@@ -85,8 +84,6 @@ public class Grid {
                 count++;
             }
         }
-        GameCodeDatabase.addGameCode(gamecode, this);
-
     }
 
     public int countEmpty(){

@@ -3,9 +3,7 @@ package pcd.ass03.part2.common.CommunicationProva;
 import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
 import pcd.ass03.part2.common.sudoku.Grid;
 import pcd.ass03.part2.common.view.HandlerSingleSudokuView;
-import pcd.ass03.part2.common.view.SudokuView;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class HandlerSingleSudoku {
@@ -35,14 +33,20 @@ public class HandlerSingleSudoku {
         return message;
     }
 
-    public static void generateGrid(String gamecode, String fullMessage){
-        if(fullMessage!=""){
-            new Grid(gamecode, HandlerSingleSudoku.turnMessageToGameMatrixString(fullMessage), HandlerSingleSudoku.turnMessageToRiddleString(fullMessage));
-        }
+    public static Grid loadGrid(String gamecode, String fullMessage){
+            String message = fullMessage;
+            String gameMatrix = HandlerSingleSudoku.turnMessageToGameMatrixString(message);
+            String riddle = HandlerSingleSudoku.turnMessageToRiddleString(fullMessage);
+
+            return new Grid(gamecode, gameMatrix, riddle);
     }
 
     public static String generateMessage(String gameMatrix, String riddle) {
         return gameMatrix + SEPARATOR + riddle;
+    }
+
+    public static String generateMessage(Grid sudokuGrid){
+        return generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage());
     }
 
     public static String turnMessageToGameMatrixString(String message) {
@@ -54,18 +58,21 @@ public class HandlerSingleSudoku {
     }
 
     public static void startListening(String gamecode) {
-        rabbit.listenForUpdates(gamecode, message -> {
-            generateGrid(gamecode, message);
-            HandlerSingleSudokuView.updateGridUI(GameCodeDatabase.getGrid(gamecode));
-            System.out.println("Aggiornata la griglia con: " + message);
+        rabbit.listenForUpdates(gamecode, callback -> {
+            System.out.println("CIAO");
+
+            Grid sudokuGrid = GameCodeDatabase.getGrid(gamecode);
+            System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
+            HandlerSingleSudokuView.updateGridUI(sudokuGrid);
+            System.out.println("Aggiornata la griglia con: " + callback);
         });
     }
 
 
 
-    public static void updateMessage(String gamecode){
-        Grid sudokuGrid = GameCodeDatabase.getGrid(gamecode);
-        rabbit.updateMessageSudoku(gamecode, HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+    public static void updateMessage(Grid sudokuGrid){
+        System.out.println("NOME CODA: "+sudokuGrid.getGamecode());
+        rabbit.updateMessageSudoku(sudokuGrid.getGamecode());
     }
 
 }

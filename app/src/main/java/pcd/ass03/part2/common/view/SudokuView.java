@@ -14,7 +14,6 @@ public class SudokuView extends JFrame {
     private String gamecode;
     private String nomeutente;
     private JTextField[][] textFields;
-    private final SudokuUtils insertChecker;
 
     public SudokuView(String nomeutente, String gamecode, HomeAction homeAction, Rabbit rabbit) {
         this.nomeutente = nomeutente;
@@ -37,17 +36,10 @@ public class SudokuView extends JFrame {
             sudokuGrid = new Grid(gamecode);
             HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
-            HandlerSingleSudoku.generateGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));
-            sudokuGrid = GameCodeDatabase.getGrid(gamecode);
+            sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));
         }
+        GameCodeDatabase.addGameCode(gamecode, sudokuGrid);
         HandlerSingleSudoku.startListening(gamecode);
-
-
-
-
-
-
-        insertChecker = new SudokuUtils(sudokuGrid);
 
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));
         textFields = new JTextField[9][9];
@@ -90,7 +82,7 @@ public class SudokuView extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         tf.setBackground(Palette.getColor(MyColorList.FOCUSCELL));
                         tf.setBackground(new Color(0xE9F580));
-                        insertChecker.setFocus(finalRow1, finalCol1, true);
+                        SudokuUtils.setFocus(sudokuGrid, finalRow1, finalCol1, true);
                     }
                 });
 
@@ -103,14 +95,13 @@ public class SudokuView extends JFrame {
                             char c = e.getKeyChar();
                             if (Character.isDigit(c)) {
                                 int insertedValue = Character.getNumericValue(c);
-                                boolean isCorrect = insertChecker.checkAndInsertValue(rowIndex, colIndex, insertedValue);
+                                boolean isCorrect = SudokuUtils.checkAndInsertValue(sudokuGrid, rowIndex, colIndex, insertedValue);
                                 if (isCorrect) {
                                     textField.setText(String.valueOf(insertedValue));
                                     textField.setEditable(false);
-                                    if (insertChecker.checkWinning()) {
+                                    if (SudokuUtils.checkWinning(sudokuGrid)) {
                                         JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
                                     }
-                                    HandlerSingleSudoku.updateMessage(gamecode);
                                 } else {
                                     JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
                                     e.consume();
@@ -133,7 +124,7 @@ public class SudokuView extends JFrame {
                         } else {
                             textField.setBackground(Palette.getColor(MyColorList.WHITE));
                         }
-                        insertChecker.setFocus(finalRow, finalCol, false);
+                        SudokuUtils.setFocus(sudokuGrid, finalRow, finalCol, false);
                     }
                 });
 

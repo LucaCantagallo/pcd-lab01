@@ -14,6 +14,7 @@ public class GameCodeDatabase {
     }
 
     public static void addGameCode(String gameCode, Grid grid) {
+        gameCodes.remove(gameCode);
         gameCodes.put(gameCode, grid);
     }
 

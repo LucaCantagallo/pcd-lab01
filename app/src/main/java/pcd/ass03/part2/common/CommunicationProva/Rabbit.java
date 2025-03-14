@@ -80,14 +80,14 @@ public class Rabbit {
         }
     }
 
-    public void updateMessageSudoku(String gamecode, String message) {
+    public void updateMessageSudoku(String gamecode) {
         String queueName = gamecode + "_updates";
         try {
             channel.queueDeclare(queueName, true, false, false, null);
 
             // Invia il messaggio SENZA cancellare la coda (per tenere traccia degli aggiornamenti)
-            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
-            System.out.println("🔄 Aggiornamento inviato a " + queueName + ": " + message);
+            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, null); //message.getBytes(StandardCharsets.UTF_8));
+            System.out.println("🔄 Aggiornamento inviato a " + queueName);
         } catch (IOException e) {
             throw new RuntimeException("Errore nell'aggiornamento della coda " + queueName, e);
         }
