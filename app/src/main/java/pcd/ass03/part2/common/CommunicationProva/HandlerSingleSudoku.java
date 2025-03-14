@@ -60,6 +60,7 @@ public class HandlerSingleSudoku {
     public static void startListening(String gamecode) {
         rabbit.listenForUpdates(gamecode, callback -> {
             Grid sudokuGrid = GameCodeDatabase.getGrid(gamecode);
+            //Grid sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, callback);
             //System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
             HandlerSingleSudokuView.updateGridUI(sudokuGrid);
             System.out.println("Aggiornata la griglia da Listening");
