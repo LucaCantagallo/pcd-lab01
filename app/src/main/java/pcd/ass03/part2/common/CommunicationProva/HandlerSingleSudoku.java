@@ -17,7 +17,7 @@ public class HandlerSingleSudoku {
 
     public static void sendMessage(Grid sudokuGrid){
         try {
-            rabbit.sendMessage(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+            rabbit.sendMessage(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString()));
         } catch (IOException e) {
             System.out.println("Sudoku non salvato correttamente!");
         }
@@ -46,7 +46,7 @@ public class HandlerSingleSudoku {
     }
 
     public static String generateMessage(Grid sudokuGrid){
-        return generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage());
+        return generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString());
     }
 
     public static String turnMessageToGameMatrixString(String message) {

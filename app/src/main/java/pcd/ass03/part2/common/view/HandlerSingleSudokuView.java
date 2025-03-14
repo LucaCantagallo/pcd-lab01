@@ -24,8 +24,8 @@ public class HandlerSingleSudokuView {
                     for (int col = 0; col < 9; col++) {
                         Cell cell = sudokuGrid.getCell(row, col);
                         if (!cell.isShowed()) {
-                            textFields[row][col].setText("1");
-                            //textFields[row][col].setText(cell.getValue().map(String::valueOf).orElse(""));
+                            //textFields[row][col].setText("1");
+                            textFields[row][col].setText(cell.getValue().map(String::valueOf).orElse(""));
                         }
                     }
                 }

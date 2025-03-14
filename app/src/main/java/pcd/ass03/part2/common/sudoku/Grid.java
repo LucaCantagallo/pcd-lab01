@@ -28,6 +28,7 @@ public class Grid {
         gmO = Creator.createFull();
 
         rO = Creator.createRiddle(gmO); //
+        this.riddle = rO.toString();
 
         grid = new Cell[9][9];
         for(int row=0; row<9; row++){
@@ -121,12 +122,16 @@ public class Grid {
         this.getCell(row, col).setValue(Optional.of(value));
     }
 
-    public String getGmMessage(){
+    public String getGameMatrixToString(){
         return gameMatrix;
     }
 
-    public String getRMessage(){
-        return rO.toString();
+    public String getRiddleToString(){
+        return this.riddle;
+    }
+
+    public void setRiddle(String riddle){
+        this.riddle=riddle;
     }
 
 }
