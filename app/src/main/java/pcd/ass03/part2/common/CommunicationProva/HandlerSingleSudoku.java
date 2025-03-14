@@ -37,7 +37,7 @@ public class HandlerSingleSudoku {
             String message = fullMessage;
             String gameMatrix = HandlerSingleSudoku.turnMessageToGameMatrixString(message);
             String riddle = HandlerSingleSudoku.turnMessageToRiddleString(fullMessage);
-
+            System.out.println("RIDDLE"+riddle);
             return new Grid(gamecode, gameMatrix, riddle);
     }
 
@@ -65,7 +65,10 @@ public class HandlerSingleSudoku {
             HandlerSingleSudokuView.updateGridUI(sudokuGrid);
             System.out.println("Aggiornata la griglia da Listening");
         });
-        rabbit.updateMessageSudoku(gamecode, HandlerSingleSudoku.generateMessage(GameCodeDatabase.getGrid(gamecode)));
+    }
+
+    public static void isOpeningConnection(String gamecode, Grid grid) {
+        rabbit.updateMessageSudoku(gamecode, HandlerSingleSudoku.generateMessage(grid));
     }
 
 

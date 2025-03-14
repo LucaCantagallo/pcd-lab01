@@ -39,6 +39,7 @@ public class SudokuView extends JFrame {
             sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));
         }
         GameCodeDatabase.addGameCode(gamecode, sudokuGrid);
+        HandlerSingleSudoku.isOpeningConnection(gamecode, sudokuGrid);
         HandlerSingleSudoku.startListening(gamecode);
 
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));
