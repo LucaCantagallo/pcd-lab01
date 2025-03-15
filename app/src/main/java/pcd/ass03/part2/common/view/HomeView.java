@@ -28,7 +28,6 @@ public class HomeView extends JFrame {
         }
         HandlerSingleSudoku.initialize(rabbit);
         HandlerMessageDBGameCode.initialize(rabbit);
-        System.out.println(HandlerMessageDBGameCode.getMotherString());
 
 
         setTitle("Sudoku - Home");
@@ -98,7 +97,6 @@ public class HomeView extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(GameCodeDatabase.getCodes());
                 String gameCode;
                 do {
                     gameCode = JOptionPane.showInputDialog(

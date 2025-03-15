@@ -17,7 +17,10 @@ public class HandlerSingleSudoku {
 
     public static void sendMessage(Grid sudokuGrid){
         try {
-            rabbit.sendMessage(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString()));
+            String message = HandlerSingleSudoku.generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString());
+            System.out.println("message:");
+            System.out.println(message);
+            rabbit.sendMessage(sudokuGrid.getGamecode(), message);
         } catch (IOException e) {
             System.out.println("Sudoku non salvato correttamente!");
         }
@@ -36,8 +39,7 @@ public class HandlerSingleSudoku {
     public static Grid loadGrid(String gamecode, String fullMessage){
             String message = fullMessage;
             String gameMatrix = HandlerSingleSudoku.turnMessageToGameMatrixString(message);
-            String riddle = HandlerSingleSudoku.turnMessageToRiddleString(fullMessage);
-            System.out.println("RIDDLE"+riddle);
+            String riddle = HandlerSingleSudoku.turnMessageToRiddleString(message);
             return new Grid(gamecode, gameMatrix, riddle);
     }
 
@@ -59,22 +61,22 @@ public class HandlerSingleSudoku {
 
     public static void startListening(String gamecode) {
         rabbit.listenForUpdates(gamecode, callback -> {
-            Grid sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, callback);
-            //System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
+            System.out.println("Eseguito callback");
+            //Grid sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, callback);
+            Grid sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));
+            //Grid sudokuGrid = GameCodeDatabase.getGrid(gamecode);
             GameCodeDatabase.addGameCode(gamecode, sudokuGrid);
             HandlerSingleSudokuView.updateGridUI(sudokuGrid);
             System.out.println("Aggiornata la griglia da Listening");
         });
     }
 
-    public static void isOpeningConnection(String gamecode, Grid grid) {
-        rabbit.updateMessageSudoku(gamecode, HandlerSingleSudoku.generateMessage(grid));
-    }
 
 
 
     public static void updateMessage(Grid sudokuGrid){
-        rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid));
+        HandlerSingleSudoku.sendMessage(sudokuGrid);
+        //rabbit.updateMessageSudoku(sudokuGrid.getGamecode());
     }
 
 }

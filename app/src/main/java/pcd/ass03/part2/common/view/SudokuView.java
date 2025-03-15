@@ -38,10 +38,8 @@ public class SudokuView extends JFrame {
         } else {
             String message= HandlerSingleSudoku.receiveMessage(gamecode);
             sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, message);
-            //System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
         }
         GameCodeDatabase.addGameCode(gamecode, sudokuGrid);
-        HandlerSingleSudoku.isOpeningConnection(gamecode, sudokuGrid);
         HandlerSingleSudoku.startListening(gamecode);
 
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));
@@ -146,7 +144,6 @@ public class SudokuView extends JFrame {
         add(mainPanel);
         setVisible(true);
         HandlerSingleSudokuView.setSudokuView(this);
-        System.out.println("DATABASE: "+GameCodeDatabase.getCodes());
     }
 
     public JTextField[][] getTextFields() {

@@ -19,10 +19,9 @@ public class SudokuUtils {
             //sudokuGrid.setValueRiddle(row, col, (byte) insertedValue);
 
             //Aggiornamenti
-            HandlerSingleSudoku.sendMessage(sudokuGrid);
-            HandlerSingleSudoku.updateMessage(sudokuGrid);
             GameCodeDatabase.addGameCode(sudokuGrid.getGamecode(), sudokuGrid);
-            System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
+            HandlerSingleSudoku.updateMessage(sudokuGrid);
+            //System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
             return true; // Valore corretto
         }
         //Da qui in futuro potremmo contare gli errori

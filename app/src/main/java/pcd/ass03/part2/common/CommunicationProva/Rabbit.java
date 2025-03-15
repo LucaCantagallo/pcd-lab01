@@ -44,36 +44,48 @@ public class Rabbit {
 
     // ✅ Metodo per ricevere subito il messaggio più recente (se esiste), altrimenti null
     public String receiveMessage(String gamecode) throws IOException {
+        //System.out.println("1");
         String queueName = gamecode;
-        channel.queueDeclare(queueName, true, false, false, null); // Assicura che la coda esista
-
+        //System.out.println("2");
+        channel.queueDeclare(queueName, false, false, false, null); // Assicura che la coda esista
+        //System.out.println("3");
         GetResponse response = channel.basicGet(queueName, true); // Prende il messaggio (se c'è)
+        //System.out.println("4");
         if (response == null) {
-            return ""; // Nessun messaggio in coda
+            //System.out.println("5a");
+            return "NON HO RICEVUTO NULLA"; // Nessun messaggio in coda
+        } else {
+            //System.out.println("5");
+            String message = new String(response.getBody(), StandardCharsets.UTF_8);
+            //System.out.println("6");
+            System.out.println(message + "inviato a " + queueName);
+            //System.out.println("7");
+            return new String(response.getBody(), StandardCharsets.UTF_8);
         }
-        return new String(response.getBody(), StandardCharsets.UTF_8);
     }
 
     // ✅ Metodo per inviare un messaggio, sovrascrivendo i vecchi nella coda
     public void sendMessage(String gamecode, String message) throws IOException {
+        System.out.println("a");
         String queueName = gamecode;
-        channel.queueDeclare(queueName, true, false, false, null);
+        channel.queueDeclare(queueName, false, false, false, null);
 
         // Pulisce la coda prima di inserire il nuovo messaggio, lasciando sempre solo l'ultimo
         channel.queuePurge(queueName);
 
         channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
-        //System.out.println(" [x] Sent: '" + message + "' to " + queueName);
+        System.out.println(" [x] Sent: '" + message + "' to " + queueName);
     }
 
+
     public void listenForUpdates(String gamecode, Consumer<String> callback){
-        String queueName = gamecode+"_updates";
+        String queueName = gamecode;
         try {
-            System.out.println("Sono in ascolto Dani");
-            channel.queueDeclare(queueName, true, false, false, null);
+            channel.queueDeclare(queueName, false, false, false, null);
             channel.basicConsume(queueName, true, (consumerTag, message) -> {
+                this.receiveMessage(gamecode);
                 String receivedMessage = new String(message.getBody(), StandardCharsets.UTF_8);
-                callback.accept(receivedMessage);
+                callback.accept(receivedMessage); //Essenziale, non cancellare
             }, consumerTag -> {});
 
         } catch (IOException e) {
@@ -81,14 +93,13 @@ public class Rabbit {
         }
     }
 
-    public void updateMessageSudoku(String gamecode, String message) {
+    public void updateMessageSudoku(String gamecode) {
         String queueName = gamecode + "_updates";
         try {
             channel.queueDeclare(queueName, true, false, false, null);
 
             // Invia il messaggio SENZA cancellare la coda (per tenere traccia degli aggiornamenti)
-            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
-            System.out.println("🔄 Aggiornamento inviato a " + queueName);
+            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, "notification".getBytes());
         } catch (IOException e) {
             throw new RuntimeException("Errore nell'aggiornamento della coda " + queueName, e);
         }
