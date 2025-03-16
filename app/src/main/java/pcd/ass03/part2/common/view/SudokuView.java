@@ -14,6 +14,7 @@ public class SudokuView extends JFrame {
     private String gamecode;
     private String nomeutente;
     private JTextField[][] textFields;
+    Grid sudokuGrid;
 
     public SudokuView(String nomeutente, String gamecode, HomeAction homeAction, Rabbit rabbit) {
         this.nomeutente = nomeutente;
@@ -31,16 +32,21 @@ public class SudokuView extends JFrame {
         JButton backButton = BackButtonFactory.createBackButton(rabbit, this);
         topPanel.add(backButton);
 
-        Grid sudokuGrid;
+
         if(homeAction.equals(HomeAction.CREATE)) {
             sudokuGrid = new Grid(gamecode);
             HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
             String message= HandlerSingleSudoku.receiveMessage(gamecode);
+            System.out.println("MESSAGGIO A  SUDOKUVIEW");
+            System.out.println(message);
+            System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
             sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, message);
         }
         GameCodeDatabase.addGameCode(gamecode, sudokuGrid);
         HandlerSingleSudoku.startListening(gamecode);
+
+
 
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));
         textFields = new JTextField[9][9];
