@@ -1,8 +1,8 @@
 package pcd.ass03.part2.part2A.controller;
 
 import pcd.ass03.part2.part2A.model.Rabbit;
-import pcd.ass03.part2.part2A.view.GameDetailsView;
-import pcd.ass03.part2.part2A.view.GridView;
+import pcd.ass03.part2.part2A.view.GameView;
+import pcd.ass03.part2.part2A.view.GridListView;
 import pcd.ass03.part2.part2A.view.StartView;
 
 import java.awt.event.ActionListener;
@@ -25,9 +25,9 @@ public class StartController {
         @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
             startView.setVisible(false);
-            GridView gridView = new GridView(user.getId());
-            new GridController(user, startView, gridView);
-            gridView.setVisible(true);
+            GridListView gridListView = new GridListView(user.getId());
+            new GridListController(user, startView, gridListView);
+            gridListView.setVisible(true);
         }
     }
 
@@ -39,10 +39,10 @@ public class StartController {
             } catch (IOException | TimeoutException ex) {
                 throw new RuntimeException(ex);
             }
-            GameDetailsView gameDetailsView = new GameDetailsView(user.getId());
-            new GameDetailsController(user, gameDetailsView, startView, user.getAllGrids().size() - 1);
+            GameView gameView = new GameView(user.getId());
+            new GameController(user, gameView, startView, user.getAllGrids().size() - 1);
             startView.setVisible(false);
-            gameDetailsView.setVisible(true);
+            gameView.setVisible(true);
         }
     }
 

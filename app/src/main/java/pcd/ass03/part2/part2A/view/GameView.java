@@ -12,7 +12,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.Optional;
 
-public class GameDetailsView extends JFrame {
+public class GameView extends JFrame {
     private final JPanel gamePanel;
     private final JButton backButton;
     private final JTextField[][] cellTextFields;
@@ -21,7 +21,7 @@ public class GameDetailsView extends JFrame {
     private int currentSelectedRow = 0;
     private int currentSelectedCol = 0;
 
-    public GameDetailsView(String title) {
+    public GameView(String title) {
         setTitle("Player-" + title + " - Sudoku Grid Details");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

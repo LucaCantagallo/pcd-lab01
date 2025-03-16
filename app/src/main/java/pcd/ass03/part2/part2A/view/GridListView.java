@@ -7,12 +7,12 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class GridView extends JFrame {
+public class GridListView extends JFrame {
 
     private final JPanel gridPanel;
     private final JButton backButton;
 
-    public GridView(String title) {
+    public GridListView(String title) {
         setTitle("Player-" + title + " - Sudoku Grids");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

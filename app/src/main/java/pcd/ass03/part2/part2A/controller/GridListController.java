@@ -1,36 +1,36 @@
 package pcd.ass03.part2.part2A.controller;
 
 import pcd.ass03.part2.part2A.model.Rabbit;
-import pcd.ass03.part2.part2A.view.GameDetailsView;
-import pcd.ass03.part2.part2A.view.GridView;
+import pcd.ass03.part2.part2A.view.GameView;
+import pcd.ass03.part2.part2A.view.GridListView;
 import pcd.ass03.part2.part2A.view.StartView;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GridController implements GridUpdateListener {
+public class GridListController implements GridUpdateListener {
     private final Rabbit user;
-    private final GridView gridView;
+    private final GridListView gridListView;
     private final StartView startView;
-    private GameDetailsView detailsView;
+    private GameView detailsView;
 
-    public GridController(Rabbit user, StartView startView, GridView gridView) {
+    public GridListController(Rabbit user, StartView startView, GridListView gridListView) {
         this.user = user;
-        this.gridView = gridView;
+        this.gridListView = gridListView;
         this.startView = startView;
         user.addGridUpdateListener(this);
-        this.gridView.addBackButtonListener(new BackButtonListener());
+        this.gridListView.addBackButtonListener(new BackButtonListener());
         initView();
     }
 
     private void initView() {
-        gridView.displayGrids(user.getAllGrids(), new GridButtonListener());
+        gridListView.displayGrids(user.getAllGrids(), new GridButtonListener());
     }
 
     @Override
     public void onGridCreated() {
-        gridView.displayGrids(user.getAllGrids(), new GridButtonListener());
+        gridListView.displayGrids(user.getAllGrids(), new GridButtonListener());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GridController implements GridUpdateListener {
 
     @Override
     public void onGridCompleted(int gridId, String userId) {
-        gridView.displayGrids(user.getAllGrids(), new GridButtonListener());
+        gridListView.displayGrids(user.getAllGrids(), new GridButtonListener());
     }
 
     class GridButtonListener implements ActionListener {
@@ -58,18 +58,18 @@ public class GridController implements GridUpdateListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int gridIndex = Integer.parseInt(e.getActionCommand().split(" ")[1]) - 1;
-            detailsView = new GameDetailsView(user.getId());
-            new GameDetailsController(user, detailsView, startView, gridIndex);
+            detailsView = new GameView(user.getId());
+            new GameController(user, detailsView, startView, gridIndex);
             detailsView.setVisible(true);
             startView.setVisible(false);
-            gridView.setVisible(false);
+            gridListView.setVisible(false);
         }
     }
 
     class BackButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            gridView.setVisible(false);
+            gridListView.setVisible(false);
 
             if (detailsView != null) {
                     detailsView.setVisible(false);

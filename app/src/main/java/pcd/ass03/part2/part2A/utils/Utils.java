@@ -11,7 +11,6 @@ public class Utils {
     private static final Map<String, Color> colorMap = new HashMap<>();
 
     static {
-        colorMap.put("red", Color.RED);
         colorMap.put("green", Color.GREEN);
         colorMap.put("yellow", Color.YELLOW);
     }
