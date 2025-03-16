@@ -16,23 +16,15 @@ public class HandlerSingleSudoku {
     }
 
     public static void sendMessage(Grid sudokuGrid){
-        try {
-            String message = HandlerSingleSudoku.generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString());
-            System.out.println("message:");
-            System.out.println(message);
-            rabbit.sendMessage(sudokuGrid.getGamecode(), message);
-        } catch (IOException e) {
-            System.out.println("Sudoku non salvato correttamente!");
-        }
+        String message = HandlerSingleSudoku.generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString());
+        System.out.println("message:");
+        System.out.println(message);
+        rabbit.sendMessage(sudokuGrid.getGamecode(), message);
     }
 
     public static String receiveMessage(String gamecode){
         String message;
-        try {
-            message = rabbit.receiveMessage(gamecode);
-        } catch (IOException e) {
-            message="";
-        }
+        message = rabbit.receiveMessage(gamecode);
         return message;
     }
 

@@ -28,7 +28,7 @@ public class SudokuView extends JFrame {
 
         // Pannello superiore per il pulsante indietro
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton backButton = BackButtonFactory.createBackButton(this);
+        JButton backButton = BackButtonFactory.createBackButton(rabbit, this);
         topPanel.add(backButton);
 
         Grid sudokuGrid;

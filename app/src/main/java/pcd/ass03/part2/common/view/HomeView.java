@@ -18,14 +18,7 @@ public class HomeView extends JFrame {
     private String nomeutente = "nomeutente"; //da impl
     private Rabbit rabbit;
 
-    public HomeView()  {
-        try {
-            this.rabbit = new Rabbit();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
+    public HomeView(Rabbit rabbit)  {
         HandlerSingleSudoku.initialize(rabbit);
         HandlerMessageDBGameCode.initialize(rabbit);
 
@@ -154,6 +147,8 @@ public class HomeView extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(HomeView::new);
+        SwingUtilities.invokeLater(() -> {
+            new HomeView(new Rabbit());
+        });
     }
 }
