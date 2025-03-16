@@ -9,20 +9,38 @@ public class StartView extends JFrame {
     private final JButton newGameButton;
 
     public StartView(String title) {
-        setTitle("Player-" + title + "  - Start View");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
 
-        JPanel centerPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         openGridViewButton = new JButton("Join Game");
-        openGridViewButton.setPreferredSize(new Dimension(800, 100));
+        openGridViewButton.setPreferredSize(new Dimension(150, 50));
         newGameButton = new JButton("New Game");
-        newGameButton.setPreferredSize(new Dimension(800, 100));
-        centerPanel.add(openGridViewButton);
-        centerPanel.add(newGameButton);
+        newGameButton.setPreferredSize(new Dimension(150, 50));
 
-        add(centerPanel, BorderLayout.CENTER);
+        setTitle("Sudoku - Home");
+        setSize(600, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        JLabel titleLabel = new JLabel("SUDOKU");
+        titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 48));
+        titleLabel.setForeground(new Color(0xFF5733));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(titleLabel, gbc);
+
+
+        JLabel welcomeLabel = new JLabel("Bentornato "+title+"!");
+        welcomeLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        gbc.gridy = 1;
+        add(welcomeLabel, gbc);
+
+        add(openGridViewButton);
+        add(newGameButton);
     }
 
     public void addJoinGameListener(ActionListener listener) {
