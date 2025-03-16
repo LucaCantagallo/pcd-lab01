@@ -71,34 +71,25 @@ public class Rabbit {
     // ✅ Metodo per ricevere subito il messaggio più recente (se esiste), altrimenti null
     public String receiveMessage(String gamecode) {
         this.reconnect();
-        //System.out.println("1");
-        String queueName = gamecode;
-        //System.out.println("2");
+        String queueName = gamecode; // Coda con l'ultimo Sudoku
+
         try {
-            channel.queueDeclare(queueName, true, false, false, null); // Assicura che la coda esista
+            channel.queueDeclare(queueName, true, false, false, null);
+            GetResponse response = channel.basicGet(queueName, false);
+
+            if (response != null) {
+                channel.basicAck(response.getEnvelope().getDeliveryTag(), false);
+                String message = new String(response.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Sudoku ricevuto da " + queueName);
+                return message;
+            }
         } catch (IOException e) {
-            System.out.println("DeclareReceive coda sudoku non riuscita IOException");
+            System.out.println("Errore nella ricezione del Sudoku: " + e.getMessage());
         }
-        //System.out.println("3");
-        GetResponse response = null; // Prende il messaggio (se c'è)
-        try {
-            response = channel.basicGet(queueName, true);
-        } catch (IOException e) {
-            System.out.println("Risposta canale sudoku non ottenuta correttamente IOException");
-        }
-        //System.out.println("4");
-        if (response == null) {
-            //System.out.println("5a");
-            return "NON HO RICEVUTO NULLA"; // Nessun messaggio in coda
-        } else {
-            //System.out.println("5");
-            String message = new String(response.getBody(), StandardCharsets.UTF_8);
-            //System.out.println("6");
-            System.out.println(message + "inviato a " + queueName);
-            //System.out.println("7");
-            return new String(response.getBody(), StandardCharsets.UTF_8);
-        }
+
+        return "NON HO RICEVUTO NULLA";
     }
+
 
     // ✅ Metodo per inviare un messaggio, sovrascrivendo i vecchi nella coda
     public void sendMessage(String gamecode, String message) {
@@ -110,50 +101,63 @@ public class Rabbit {
             System.out.println("DeclareSend coda sudoku non riuscita IOException");
         }
 
-        // Pulisce la coda prima di inserire il nuovo messaggio, lasciando sempre solo l'ultimo
+        // 🔹 Controlliamo se la pulizia della coda funziona davvero
         try {
-            channel.queuePurge(queueName);
+            System.out.println("Pulizia della coda prima di inviare il nuovo messaggio...");
+            while (channel.basicGet(queueName, true) != null) {
+                System.out.println("Messaggio rimosso dalla coda.");
+            }
+            System.out.println("Coda pulita.");
         } catch (IOException e) {
             System.out.println("Pulizia coda sudoku non riuscita IOException");
         }
 
         try {
+            System.out.println("Invio messaggio aggiornato alla coda principale: " + message);
             channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Messaggio inviato correttamente: " + message);
         } catch (IOException e) {
             System.out.println("Send canale sudoku non riuscita IOException");
         }
-        System.out.println(" [x] Sent: '" + message + "' to " + queueName);
     }
 
 
-    public void listenForUpdates(String gamecode, Consumer<String> callback){
+
+
+    public void listenForUpdates(String gamecode, Consumer<String> callback) {
         this.reconnect();
-        String queueName = gamecode;
+        String exchangeName = gamecode + "_exchange"; // Exchange per update in tempo reale
+
         try {
-            channel.queueDeclare(queueName, true, false, false, null);
+            channel.exchangeDeclare(exchangeName, BuiltinExchangeType.FANOUT, true);
+            String queueName = channel.queueDeclare().getQueue(); // Coda anonima per ogni client
+            channel.queueBind(queueName, exchangeName, ""); // Lega la coda all'exchange
+
             channel.basicConsume(queueName, true, (consumerTag, message) -> {
-                this.receiveMessage(gamecode);
                 String receivedMessage = new String(message.getBody(), StandardCharsets.UTF_8);
-                callback.accept(receivedMessage); //Essenziale, non cancellare
+                callback.accept(receivedMessage);
             }, consumerTag -> {});
 
+            System.out.println(" [x] In ascolto per aggiornamenti su " + exchangeName);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Errore nell'ascolto degli aggiornamenti: " + e.getMessage());
         }
     }
 
-    public void updateMessageSudoku(String gamecode) {
+
+    public void updateMessageSudoku(String gamecode, String update) {
         this.reconnect();
-        String queueName = gamecode + "_updates";
-        try {
-            channel.queueDeclare(queueName, true, false, false, null);
+        String exchangeName = gamecode + "_exchange"; // Stesso exchange di `listenForUpdates`
 
-            // Invia il messaggio SENZA cancellare la coda (per tenere traccia degli aggiornamenti)
-            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, "notification".getBytes());
+        try {
+            channel.exchangeDeclare(exchangeName, BuiltinExchangeType.FANOUT, true);
+            channel.basicPublish(exchangeName, "", null, update.getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Aggiornamento inviato a " + exchangeName);
         } catch (IOException e) {
-            throw new RuntimeException("Errore nell'aggiornamento della coda " + queueName, e);
+            System.out.println("Errore nell'invio dell'aggiornamento: " + e.getMessage());
         }
     }
+
 
     public void reconnect() {
         try {

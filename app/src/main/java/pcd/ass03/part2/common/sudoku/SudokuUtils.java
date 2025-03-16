@@ -20,7 +20,7 @@ public class SudokuUtils {
 
             //Aggiornamenti
             GameCodeDatabase.addGameCode(sudokuGrid.getGamecode(), sudokuGrid);
-            HandlerSingleSudoku.updateMessage(sudokuGrid);
+            HandlerSingleSudoku.updateMessage(sudokuGrid, HandlerSingleSudoku.generateMessage(sudokuGrid));
             //System.out.println(HandlerSingleSudoku.generateMessage(sudokuGrid));
             return true; // Valore corretto
         }
