@@ -20,7 +20,7 @@ public class SudokuView extends JFrame {
         this.nomeutente = nomeutente;
         this.gamecode = gamecode;
         setTitle("Sudoku");
-        setSize(600, 700);
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
