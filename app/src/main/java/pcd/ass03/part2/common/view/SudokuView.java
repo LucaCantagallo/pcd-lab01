@@ -38,8 +38,7 @@ public class SudokuView extends JFrame {
             HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
             String message= HandlerSingleSudoku.receiveMessage(gamecode);
-            System.out.println("GIOCA");
-            System.out.println(message);
+            //System.out.println(message);
             sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, message);
         }
         GameCodeDatabase.addGameCode(gamecode, sudokuGrid);

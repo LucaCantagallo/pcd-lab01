@@ -5,16 +5,10 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class StartView extends JFrame {
-    private final JButton openGridViewButton;
-    private final JButton newGameButton;
+    private final JButton joinButton;
+    private final JButton createButton;
 
     public StartView(String title) {
-
-        openGridViewButton = new JButton("Join Game");
-        openGridViewButton.setPreferredSize(new Dimension(150, 50));
-        newGameButton = new JButton("New Game");
-        newGameButton.setPreferredSize(new Dimension(150, 50));
-
         setTitle("Sudoku - Home");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,20 +28,58 @@ public class StartView extends JFrame {
         add(titleLabel, gbc);
 
 
-        JLabel welcomeLabel = new JLabel("Bentornato "+title+"!");
+        JLabel welcomeLabel = new JLabel("Benvenuto "+title+"!");
         welcomeLabel.setFont(new Font("Arial", Font.PLAIN, 24));
         gbc.gridy = 1;
         add(welcomeLabel, gbc);
 
-        add(openGridViewButton);
-        add(newGameButton);
+        createButton = new JButton("Nuovo");
+        joinButton = new JButton("Unisciti");
+
+        styleButton(createButton);
+        styleButton(joinButton);
+
+        Dimension buttonSize = new Dimension(150, 50);
+        createButton.setPreferredSize(buttonSize);
+        joinButton.setPreferredSize(buttonSize);
+
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        gbc.gridx = 0;
+        add(createButton, gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        add(joinButton, gbc);
+
+        setVisible(true);
+
+    }
+
+    private void styleButton(JButton button) {
+        button.setFont(new Font("Arial", Font.PLAIN, 20));
+        button.setBackground(new Color(0x5C6BC0));
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 50));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0x3F51B5));
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(new Color(0x5C6BC0));
+            }
+        });
     }
 
     public void addJoinGameListener(ActionListener listener) {
-        openGridViewButton.addActionListener(listener);
+        joinButton.addActionListener(listener);
     }
 
     public void addNewGameListener(ActionListener listener) {
-        newGameButton.addActionListener(listener);
+        createButton.addActionListener(listener);
     }
 }
