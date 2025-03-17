@@ -11,6 +11,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -165,7 +166,7 @@ public class Rabbit {
 
     public void getGrid() throws IOException {
         String message = allGrids.stream()
-                .map(Utils::toString) // Converte ogni Grid in una stringa
+                .map(grid -> grid.getId() + " " + Utils.toString(grid)) // Converte ogni Grid in una stringa
                 .collect(Collectors.joining("-"));
         System.out.println(message);
         ensureChannelIsOpen();
@@ -226,7 +227,7 @@ public class Rabbit {
             if (allGrids.isEmpty()){
                 System.out.println(message);
                 String[] parts = message.split("-");
-                System.out.println(parts);
+                System.out.println(Arrays.toString(parts));
                 for (String part : parts){
                     System.out.println(part);
                     Grid receivedGrid = Utils.fromString(part);
