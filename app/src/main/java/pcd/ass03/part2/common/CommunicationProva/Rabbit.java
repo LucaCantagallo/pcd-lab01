@@ -13,90 +13,171 @@ public class Rabbit {
     private Channel channel;
     private final String GLOBALGAMECODENAME = "GLOBALGAMECODE";
 
-    public Rabbit() throws IOException, TimeoutException {
+    public Rabbit(){
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
-        this.connection = factory.newConnection();
-        this.channel = connection.createChannel();
+        try {
+            this.connection = factory.newConnection();
+        } catch (IOException e) {
+            System.out.println("Connessione non riuscita IOException");
+        } catch (TimeoutException e) {
+            System.out.println("Connessione non riuscita TimeOutException");
+        }
+        try {
+            this.channel = connection.createChannel();
+        } catch (IOException e) {
+            System.out.println("Canale non creato RunTimeException");
+        }
 
-        channel.queueDeclare(this.GLOBALGAMECODENAME, true, false, false, null); // Assicura che la coda esista
+        try {
+            channel.queueDeclare(this.GLOBALGAMECODENAME, true, false, false, null); // Assicura che la coda esista
+        } catch (IOException e) {
+            System.out.println("Creazione coda globali non riuscita IOException");
+        }
 
     }
 
-    public String receiveGlobalGameCodes() throws IOException {
+    public String receiveGlobalGameCodes() {
+        this.reconnect();
 
-
-        GetResponse response = channel.basicGet(this.GLOBALGAMECODENAME, true); // Prende il messaggio (se c'è)
+        GetResponse response = null; // Prende il messaggio (se c'è)
+        try {
+            response = channel.basicGet(this.GLOBALGAMECODENAME, true);
+        } catch (IOException e) {
+            System.out.println("Get code globali non riuscita IOException");
+        }
         if (response == null) {
             return ""; // Nessun messaggio in coda
         }
         return new String(response.getBody(), StandardCharsets.UTF_8);
     }
 
-    public void sendGlobalGameCodes(String message) throws IOException {
+    public void sendGlobalGameCodes(String message) {
+        this.reconnect();
+        try {
+            channel.queuePurge(this.GLOBALGAMECODENAME);
+        } catch (IOException e) {
+            System.out.println("Pulizia coda globale non riuscita IOException");
+        }
 
-        // Pulisce la coda prima di inserire il nuovo messaggio, lasciando sempre solo l'ultimo
-        channel.queuePurge(this.GLOBALGAMECODENAME);
-
-        channel.basicPublish("", this.GLOBALGAMECODENAME, null, message.getBytes(StandardCharsets.UTF_8));
+        try {
+            channel.basicPublish("", this.GLOBALGAMECODENAME, null, message.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            System.out.println("Invio messaggio globali non riuscita IOException");
+        }
         //System.out.println(" [x] Sent: '" + message + "' to " + queueName);
     }
 
     // ✅ Metodo per ricevere subito il messaggio più recente (se esiste), altrimenti null
-    public String receiveMessage(String gamecode) throws IOException {
-        String queueName = gamecode;
-        channel.queueDeclare(queueName, true, false, false, null); // Assicura che la coda esista
+    public String receiveMessage(String gamecode) {
+        this.reconnect();
+        String queueName = gamecode; // Coda con l'ultimo Sudoku
 
-        GetResponse response = channel.basicGet(queueName, true); // Prende il messaggio (se c'è)
-        if (response == null) {
-            return ""; // Nessun messaggio in coda
-        }
-        return new String(response.getBody(), StandardCharsets.UTF_8);
-    }
-
-    // ✅ Metodo per inviare un messaggio, sovrascrivendo i vecchi nella coda
-    public void sendMessage(String gamecode, String message) throws IOException {
-        String queueName = gamecode;
-        channel.queueDeclare(queueName, true, false, false, null);
-
-        // Pulisce la coda prima di inserire il nuovo messaggio, lasciando sempre solo l'ultimo
-        channel.queuePurge(queueName);
-
-        channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
-        //System.out.println(" [x] Sent: '" + message + "' to " + queueName);
-    }
-
-    public void listenForUpdates(String gamecode, Consumer<String> callback){
-        String queueName = gamecode+"_updates";
         try {
             channel.queueDeclare(queueName, true, false, false, null);
+            GetResponse response = channel.basicGet(queueName, false);
+
+            if (response != null) {
+                channel.basicAck(response.getEnvelope().getDeliveryTag(), false);
+                String message = new String(response.getBody(), StandardCharsets.UTF_8);
+                System.out.println(" [x] Sudoku ricevuto da " + queueName);
+                return message;
+            }
+        } catch (IOException e) {
+            System.out.println("Errore nella ricezione del Sudoku: " + e.getMessage());
+        }
+
+        return "NON HO RICEVUTO NULLA";
+    }
+
+
+    // ✅ Metodo per inviare un messaggio, sovrascrivendo i vecchi nella coda
+    public void sendMessage(String gamecode, String message) {
+        this.reconnect();
+        String queueName = gamecode;
+        try {
+            channel.queueDeclare(queueName, true, false, false, null);
+        } catch (IOException e) {
+            System.out.println("DeclareSend coda sudoku non riuscita IOException");
+        }
+
+        // 🔹 Controlliamo se la pulizia della coda funziona davvero
+        try {
+            System.out.println("Pulizia della coda prima di inviare il nuovo messaggio...");
+            while (channel.basicGet(queueName, true) != null) {
+                System.out.println("Messaggio rimosso dalla coda.");
+            }
+            System.out.println("Coda pulita.");
+        } catch (IOException e) {
+            System.out.println("Pulizia coda sudoku non riuscita IOException");
+        }
+
+        try {
+            System.out.println("Invio messaggio aggiornato alla coda principale: " + message);
+            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Messaggio inviato correttamente: " + message);
+        } catch (IOException e) {
+            System.out.println("Send canale sudoku non riuscita IOException");
+        }
+    }
+
+
+
+
+    public void listenForUpdates(String gamecode, Consumer<String> callback) {
+        this.reconnect();
+        String exchangeName = gamecode + "_exchange"; // Exchange per update in tempo reale
+
+        try {
+            channel.exchangeDeclare(exchangeName, BuiltinExchangeType.FANOUT, true);
+            String queueName = channel.queueDeclare().getQueue(); // Coda anonima per ogni client
+            channel.queueBind(queueName, exchangeName, ""); // Lega la coda all'exchange
+
             channel.basicConsume(queueName, true, (consumerTag, message) -> {
                 String receivedMessage = new String(message.getBody(), StandardCharsets.UTF_8);
                 callback.accept(receivedMessage);
             }, consumerTag -> {});
-            System.out.println("Percepito qualcosa");
+
+            System.out.println(" [x] In ascolto per aggiornamenti su " + exchangeName);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Errore nell'ascolto degli aggiornamenti: " + e.getMessage());
         }
     }
 
-    public void updateMessageSudoku(String gamecode, String message) {
-        String queueName = gamecode + "_updates";
+
+    public void updateMessageSudoku(String gamecode, String update) {
+        this.reconnect();
+        String exchangeName = gamecode + "_exchange"; // Stesso exchange di `listenForUpdates`
+
         try {
-            channel.queueDeclare(queueName, true, false, false, null);
-
-            // Invia il messaggio SENZA cancellare la coda (per tenere traccia degli aggiornamenti)
-            channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));
-            System.out.println("🔄 Aggiornamento inviato a " + queueName + ": " + message);
+            channel.exchangeDeclare(exchangeName, BuiltinExchangeType.FANOUT, true);
+            channel.basicPublish(exchangeName, "", null, update.getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Aggiornamento inviato a " + exchangeName);
         } catch (IOException e) {
-            throw new RuntimeException("Errore nell'aggiornamento della coda " + queueName, e);
+            System.out.println("Errore nell'invio dell'aggiornamento: " + e.getMessage());
         }
     }
 
 
+    public void reconnect() {
+        try {
+            if (connection == null || !connection.isOpen()) {
+                ConnectionFactory factory = new ConnectionFactory();
+                factory.setHost("localhost");
+                this.connection = factory.newConnection();
+            }
+            if (channel == null || !channel.isOpen()) {
+                this.channel = connection.createChannel();
+                System.out.println("[Rabbit] Connessione e canale ristabiliti.");
+            }
+        } catch (IOException | TimeoutException e) {
+            System.err.println("[Rabbit] Errore nel riconnettersi: " + e.getMessage());
+        }
+    }
 
 
     public void close() throws IOException, TimeoutException {
+        this.reconnect();
         if (channel != null) channel.close();
         if (connection != null) connection.close();
     }

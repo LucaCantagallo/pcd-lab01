@@ -44,21 +44,13 @@ public class HandlerMessageDBGameCode {
 
     public static String getMotherString() {
         String motherString="";
-        try {
-            motherString = rabbit.receiveGlobalGameCodes();
-        } catch (IOException e) {
-            System.out.println("Non è stata ricevuta la lista dei gamecode");;
-        }
+        motherString = rabbit.receiveGlobalGameCodes();
         sendMotherString(motherString);
         return motherString;
     }
 
     public static void sendMotherString(String message){
-        try {
-            rabbit.sendGlobalGameCodes(message);
-        } catch (IOException e) {
-            System.out.println("Non è stato possibile aggiornare la lista dei gamecode");
-        }
+        rabbit.sendGlobalGameCodes(message);
     }
 
 

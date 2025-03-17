@@ -18,17 +18,9 @@ public class HomeView extends JFrame {
     private String nomeutente = "nomeutente"; //da impl
     private Rabbit rabbit;
 
-    public HomeView()  {
-        try {
-            this.rabbit = new Rabbit();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
+    public HomeView(Rabbit rabbit)  {
         HandlerSingleSudoku.initialize(rabbit);
         HandlerMessageDBGameCode.initialize(rabbit);
-        System.out.println(HandlerMessageDBGameCode.getMotherString());
 
 
         setTitle("Sudoku - Home");
@@ -98,7 +90,6 @@ public class HomeView extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(GameCodeDatabase.getCodes());
                 String gameCode;
                 do {
                     gameCode = JOptionPane.showInputDialog(
@@ -156,6 +147,8 @@ public class HomeView extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(HomeView::new);
+        SwingUtilities.invokeLater(() -> {
+            new HomeView(new Rabbit());
+        });
     }
 }

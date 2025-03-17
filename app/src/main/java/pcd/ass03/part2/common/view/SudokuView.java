@@ -14,7 +14,7 @@ public class SudokuView extends JFrame {
     private String gamecode;
     private String nomeutente;
     private JTextField[][] textFields;
-    private final SudokuUtils insertChecker;
+    Grid sudokuGrid;
 
     public SudokuView(String nomeutente, String gamecode, HomeAction homeAction, Rabbit rabbit) {
         this.nomeutente = nomeutente;
@@ -29,25 +29,25 @@ public class SudokuView extends JFrame {
 
         // Pannello superiore per il pulsante indietro
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton backButton = BackButtonFactory.createBackButton(this);
+        JButton backButton = BackButtonFactory.createBackButton(rabbit, this);
         topPanel.add(backButton);
 
-        Grid sudokuGrid;
+
         if(homeAction.equals(HomeAction.CREATE)) {
             sudokuGrid = new Grid(gamecode);
             HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
-            HandlerSingleSudoku.generateGrid(gamecode, HandlerSingleSudoku.receiveMessage(gamecode));
-            sudokuGrid = GameCodeDatabase.getGrid(gamecode);
+            String message= HandlerSingleSudoku.receiveMessage(gamecode);
+            System.out.println("GIOCA");
+            System.out.println(message);
+            sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, message);
         }
+        GameCodeDatabase.addGameCode(gamecode, sudokuGrid);
+
         HandlerSingleSudoku.startListening(gamecode);
 
 
 
-
-
-
-        insertChecker = new SudokuUtils(sudokuGrid);
 
         JPanel gridPanel = new JPanel(new GridLayout(9, 9));
         textFields = new JTextField[9][9];
@@ -90,7 +90,7 @@ public class SudokuView extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         tf.setBackground(Palette.getColor(MyColorList.FOCUSCELL));
                         tf.setBackground(new Color(0xE9F580));
-                        insertChecker.setFocus(finalRow1, finalCol1, true);
+                        SudokuUtils.setFocus(sudokuGrid, finalRow1, finalCol1, true);
                     }
                 });
 
@@ -103,14 +103,13 @@ public class SudokuView extends JFrame {
                             char c = e.getKeyChar();
                             if (Character.isDigit(c)) {
                                 int insertedValue = Character.getNumericValue(c);
-                                boolean isCorrect = insertChecker.checkAndInsertValue(rowIndex, colIndex, insertedValue);
+                                boolean isCorrect = SudokuUtils.checkAndInsertValue(sudokuGrid, rowIndex, colIndex, insertedValue);
                                 if (isCorrect) {
                                     textField.setText(String.valueOf(insertedValue));
                                     textField.setEditable(false);
-                                    if (insertChecker.checkWinning()) {
+                                    if (SudokuUtils.checkWinning(sudokuGrid)) {
                                         JOptionPane.showMessageDialog(null, "Vittoria!", "Vittoria", JOptionPane.INFORMATION_MESSAGE);
                                     }
-                                    HandlerSingleSudoku.updateMessage(gamecode);
                                 } else {
                                     JOptionPane.showMessageDialog(null, "Valore errato!", "Errore", JOptionPane.ERROR_MESSAGE);
                                     e.consume();
@@ -133,7 +132,7 @@ public class SudokuView extends JFrame {
                         } else {
                             textField.setBackground(Palette.getColor(MyColorList.WHITE));
                         }
-                        insertChecker.setFocus(finalRow, finalCol, false);
+                        SudokuUtils.setFocus(sudokuGrid, finalRow, finalCol, false);
                     }
                 });
 
@@ -152,7 +151,6 @@ public class SudokuView extends JFrame {
         add(mainPanel);
         setVisible(true);
         HandlerSingleSudokuView.setSudokuView(this);
-        System.out.println("DATABASE: "+GameCodeDatabase.getCodes());
     }
 
     public JTextField[][] getTextFields() {

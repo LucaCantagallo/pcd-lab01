@@ -30,10 +30,6 @@ public class Cell {
         return hiddenValue;
     }
 
-    public void setHiddenValue(int hiddenValue) {
-        this.hiddenValue = hiddenValue;
-    }
-
     public boolean isVisited() {
         return isVisited;
     }

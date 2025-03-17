@@ -3,9 +3,7 @@ package pcd.ass03.part2.common.CommunicationProva;
 import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
 import pcd.ass03.part2.common.sudoku.Grid;
 import pcd.ass03.part2.common.view.HandlerSingleSudokuView;
-import pcd.ass03.part2.common.view.SudokuView;
 
-import javax.swing.*;
 import java.io.IOException;
 
 public class HandlerSingleSudoku {
@@ -18,31 +16,33 @@ public class HandlerSingleSudoku {
     }
 
     public static void sendMessage(Grid sudokuGrid){
-        try {
-            rabbit.sendMessage(sudokuGrid.getGamecode(), HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
-        } catch (IOException e) {
-            System.out.println("Sudoku non salvato correttamente!");
-        }
+        String message = HandlerSingleSudoku.generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString());
+        System.out.println("message:");
+        System.out.println(message);
+        rabbit.sendMessage(sudokuGrid.getGamecode(), message);
     }
 
     public static String receiveMessage(String gamecode){
         String message;
-        try {
-            message = rabbit.receiveMessage(gamecode);
-        } catch (IOException e) {
-            message="";
-        }
+        message = rabbit.receiveMessage(gamecode);
+        System.out.println("[DEBUG] Messaggio letto dalla coda principale: " + message);
+        rabbit.sendMessage(GameCodeDatabase.getGrid(gamecode).getGamecode(), message);
         return message;
     }
 
-    public static void generateGrid(String gamecode, String fullMessage){
-        if(fullMessage!=""){
-            new Grid(gamecode, HandlerSingleSudoku.turnMessageToGameMatrixString(fullMessage), HandlerSingleSudoku.turnMessageToRiddleString(fullMessage));
-        }
+    public static Grid loadGrid(String gamecode, String fullMessage){
+            String message = fullMessage;
+            String gameMatrix = HandlerSingleSudoku.turnMessageToGameMatrixString(message);
+            String riddle = HandlerSingleSudoku.turnMessageToRiddleString(message);
+            return new Grid(gamecode, gameMatrix, riddle);
     }
 
     public static String generateMessage(String gameMatrix, String riddle) {
         return gameMatrix + SEPARATOR + riddle;
+    }
+
+    public static String generateMessage(Grid sudokuGrid){
+        return generateMessage(sudokuGrid.getGameMatrixToString(), sudokuGrid.getRiddleToString());
     }
 
     public static String turnMessageToGameMatrixString(String message) {
@@ -54,18 +54,33 @@ public class HandlerSingleSudoku {
     }
 
     public static void startListening(String gamecode) {
-        rabbit.listenForUpdates(gamecode, message -> {
-            generateGrid(gamecode, message);
-            HandlerSingleSudokuView.updateGridUI(GameCodeDatabase.getGrid(gamecode));
-            System.out.println("Aggiornata la griglia con: " + message);
+        rabbit.listenForUpdates(gamecode, callback -> {
+            System.out.println("Eseguito callback, nuovo Sudoku ricevuto: " + callback);
+
+            // Carica la nuova griglia aggiornata dall'update ricevuto
+            Grid sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, callback);
+
+            // Aggiorna il database locale del Sudoku
+            GameCodeDatabase.addGameCode(gamecode, sudokuGrid);
+
+            // 🔹 Proviamo a stampare prima di inviare il messaggio
+            System.out.println("Invio il messaggio aggiornato nella coda principale: " + callback);
+            System.out.println("[DEBUG] Sudoku salvato in GameCodeDatabase: " + sudokuGrid.getGameMatrixToString());
+            rabbit.sendMessage(gamecode, callback);
+
+            // Aggiorna la UI
+            HandlerSingleSudokuView.updateGridUI(sudokuGrid);
+            System.out.println("Aggiornata la griglia da Listening e salvata nella coda principale");
         });
     }
 
 
 
-    public static void updateMessage(String gamecode){
-        Grid sudokuGrid = GameCodeDatabase.getGrid(gamecode);
-        rabbit.updateMessageSudoku(gamecode, HandlerSingleSudoku.generateMessage(sudokuGrid.getGmMessage(), sudokuGrid.getRMessage()));
+
+
+
+    public static void updateMessage(Grid sudokuGrid, String message){
+        rabbit.updateMessageSudoku(sudokuGrid.getGamecode(), message);
     }
 
 }
