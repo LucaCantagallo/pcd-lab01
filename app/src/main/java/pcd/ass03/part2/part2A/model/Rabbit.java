@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 public class Rabbit {
     private final String id;
@@ -22,6 +23,8 @@ public class Rabbit {
     private static final String EXCHANGE_UPDATE = "update";
     private static final String EXCHANGE_SELECT = "select";
     private static final String EXCHANGE_UNSELECT = "unselect";
+    private static final String EXCHANGE_REQUEST_GRID = "requestgrid";
+    private static final String EXCHANGE_GET_GRID = "getgrid";
     private final List<GridUpdateListener> listeners;
     private final String color;
 
@@ -37,6 +40,8 @@ public class Rabbit {
         channel.exchangeDeclare(EXCHANGE_UPDATE, "fanout");
         channel.exchangeDeclare(EXCHANGE_SELECT, "fanout");
         channel.exchangeDeclare(EXCHANGE_UNSELECT, "fanout");
+        channel.exchangeDeclare(EXCHANGE_REQUEST_GRID, "fanout");
+        channel.exchangeDeclare(EXCHANGE_GET_GRID, "fanout");
 
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind(queueName, EXCHANGE_CREATE, "");
@@ -53,6 +58,16 @@ public class Rabbit {
         String unselectQueueName = channel.queueDeclare().getQueue();
         channel.queueBind(unselectQueueName, EXCHANGE_UNSELECT, "");
         channel.basicConsume(unselectQueueName, true, unselectCellCallBack(), t -> {});
+
+        String receiveGridQueueName = channel.queueDeclare().getQueue();
+        channel.queueBind(receiveGridQueueName, EXCHANGE_REQUEST_GRID, "");
+        channel.basicConsume(receiveGridQueueName, true, requestGridCallBack(), t -> {});
+
+        String getGridQueueName = channel.queueDeclare().getQueue();
+        channel.queueBind(getGridQueueName, EXCHANGE_GET_GRID, "");
+        channel.basicConsume(getGridQueueName, true, getGridCallBack(), t -> {});
+
+        requestGrid();
     }
 
     public String getColor() {
@@ -142,6 +157,21 @@ public class Rabbit {
         channel.basicPublish(EXCHANGE_UNSELECT, "", null, message.getBytes(StandardCharsets.UTF_8));
     }
 
+    public void requestGrid() throws IOException {
+        String message = "request";
+        ensureChannelIsOpen();
+        channel.basicPublish(EXCHANGE_REQUEST_GRID, "", null, message.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public void getGrid() throws IOException {
+        String message = allGrids.stream()
+                .map(Utils::toString) // Converte ogni Grid in una stringa
+                .collect(Collectors.joining("-"));
+        System.out.println(message);
+        ensureChannelIsOpen();
+        channel.basicPublish(EXCHANGE_GET_GRID, "", null, message.getBytes(StandardCharsets.UTF_8));
+    }
+
     public int cellHiddenValue(int gridId, int row, int col) {
         System.out.println(gridId);
         System.out.println(allGrids.get(gridId-1).getHiddenValue(row, col));
@@ -172,6 +202,36 @@ public class Rabbit {
                 notifyGridUpdated(gridId);
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Grid not found");
+            }
+        };
+    }
+
+    private DeliverCallback requestGridCallBack(){
+        System.out.println("requestGridCallBack");
+        return (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            System.out.println("ricevo richiesta");
+            if (!allGrids.isEmpty()){
+                System.out.println("invio griglie");
+                getGrid();
+            }
+        };
+    }
+
+    private DeliverCallback getGridCallBack(){
+        System.out.println("getGridCallBack");
+        return (consumerTag, delivery) -> {
+            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
+            System.out.println("ricevo griglie");
+            if (allGrids.isEmpty()){
+                System.out.println(message);
+                String[] parts = message.split("-");
+                System.out.println(parts);
+                for (String part : parts){
+                    System.out.println(part);
+                    Grid receivedGrid = Utils.fromString(part);
+                    allGrids.add(receivedGrid);
+                }
             }
         };
     }
