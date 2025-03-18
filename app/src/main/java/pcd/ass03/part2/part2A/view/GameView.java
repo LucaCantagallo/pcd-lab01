@@ -67,8 +67,6 @@ public class GameView extends JFrame {
         this.gamecode = grid.getGameCode();
         this.myColor = Utils.convertStringToColor(user.getColor());
 
-        // Imposta il bordo della finestra colorato
-        getRootPane().setBorder(BorderFactory.createLineBorder(myColor, 8));
 
         // Imposta il colore di sfondo dei pannelli
         topPanel.setBackground(myColor);

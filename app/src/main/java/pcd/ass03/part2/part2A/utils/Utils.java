@@ -11,9 +11,9 @@ public class Utils {
 
     public static String generateRandomColor() {
         Random random = new Random();
-        int red = random.nextInt(181);
-        int green = random.nextInt(181);
-        int blue = random.nextInt(181);
+        int red = random.nextInt(156)+100;
+        int green = random.nextInt(156)+100;
+        int blue = random.nextInt(156)+100;
 
         return String.format("#%02X%02X%02X", red, green, blue);
     }
@@ -26,6 +26,10 @@ public class Utils {
         int blue = Integer.parseInt(hex.substring(4, 6), 16);
 
         return new Color(red, green, blue);
+    }
+
+    public static Color getTransparentColor(Color myColor){
+        return new Color(myColor.getRed(), myColor.getGreen(), myColor.getBlue(), 90);
     }
 
     public static String toString(Grid grid) {
