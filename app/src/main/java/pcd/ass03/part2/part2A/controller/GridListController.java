@@ -55,10 +55,12 @@ public class GridListController implements GridUpdateListener {
 
     class GridButtonListener implements ActionListener {
 
+        String gamecode = "prova2";
+
         @Override
         public void actionPerformed(ActionEvent e) {
             int gridIndex = Integer.parseInt(e.getActionCommand().split(" ")[1]) - 1;
-            detailsView = new GameView(user.getId());
+            detailsView = new GameView(user.getId(), gamecode);
             new GameController(user, detailsView, startView, gridIndex);
             detailsView.setVisible(true);
             startView.setVisible(false);

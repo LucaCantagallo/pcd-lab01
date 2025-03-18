@@ -18,10 +18,11 @@ public class GameView extends JFrame {
     private final JTextField[][] cellTextFields;
     private Color myColor;
     private int gridId;
+    private String gamecode;
     private int currentSelectedRow = 0;
     private int currentSelectedCol = 0;
 
-    public GameView(String title) {
+    public GameView(String title, String gamecode) {
         setTitle("Player-" + title + " - Sudoku");
         setSize(600, 600);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -41,7 +42,7 @@ public class GameView extends JFrame {
 
         cellTextFields = new JTextField[9][9]; // Initialize the JTextField array
 
-        JLabel codeLabel = new JLabel("Codice Sudoku: " + gridId, SwingConstants.CENTER);
+        JLabel codeLabel = new JLabel("Gamecode: " + gamecode, SwingConstants.CENTER);
         codeLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
@@ -59,6 +60,7 @@ public class GameView extends JFrame {
 
     public void displayGrid(Grid grid, Rabbit user) {
         this.gridId = grid.getId();
+        this.gamecode = grid.getGameCode();
         this.myColor = Utils.getColorByName(user.getColor());
         this.gamePanel.removeAll();
 

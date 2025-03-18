@@ -5,6 +5,7 @@ import pcd.ass03.part2.part2A.view.GameView;
 import pcd.ass03.part2.part2A.view.GridListView;
 import pcd.ass03.part2.part2A.view.StartView;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -32,19 +33,42 @@ public class StartController {
     }
 
     class NewGameListener implements ActionListener {
+
+
         @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            try {
-                String gameCode = "prova";
-                user.createGrid(gameCode);
-                //TODO: collegare all view
-            } catch (IOException | TimeoutException ex) {
-                throw new RuntimeException(ex);
-            }
-            GameView gameView = new GameView(user.getId());
-            new GameController(user, gameView, startView, user.getAllGrids().size() - 1);
-            startView.setVisible(false);
-            gameView.setVisible(true);
+            String gameCode;
+            do {
+                gameCode = JOptionPane.showInputDialog(
+                        startView, "Inserisci un gamecode per giocare con i tuoi amici!", "Inserisci Game Code", JOptionPane.PLAIN_MESSAGE);
+
+                // Aggiungi questo controllo per gestire il caso di annullamento
+                if (gameCode == null) {
+                    return; // Esci dal metodo se l'utente ha annullato o chiuso la finestra
+                }
+
+                if (!gameCode.trim().isEmpty()) {
+                    //if (!HandlerMessageDBGameCode.isPresent(gameCode)) {
+                        try {
+                            user.createGrid(gameCode);
+                            //TODO: collegare all view
+                        } catch (IOException | TimeoutException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        GameView gameView = new GameView(user.getId(), gameCode);
+                        new GameController(user, gameView, startView, user.getAllGrids().size() - 1);
+                        startView.setVisible(false);
+                        gameView.setVisible(true);
+                        return;
+                   // } else {
+                        //JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    //}
+                } else {
+                    JOptionPane.showMessageDialog(null, "Non è stato inserito alcun gamecode! Inserire un gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            } while(true);
+
+
         }
     }
 
