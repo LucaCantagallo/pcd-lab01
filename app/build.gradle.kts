@@ -40,6 +40,7 @@ dependencies {
 
     implementation("com.rabbitmq:amqp-client:5.24.0")
 
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
