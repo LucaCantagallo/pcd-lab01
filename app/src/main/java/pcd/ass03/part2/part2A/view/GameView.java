@@ -13,7 +13,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class GameView extends JFrame {
+    private final JPanel mainPanel;
     private final JPanel gamePanel;
+    private final JPanel topPanel;
+    private final JPanel bottomPanel;
     private final JButton backButton;
     private final JTextField[][] cellTextFields;
     private Color myColor;
@@ -28,27 +31,27 @@ public class GameView extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel = new JPanel(new BorderLayout());
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         backButton = new JButton("Indietro");
         topPanel.add(backButton);
 
 
         gamePanel = new JPanel();
         gamePanel.setLayout(new GridLayout(9, 9));
-        //getContentPane().setBackground(myColor);
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         cellTextFields = new JTextField[9][9]; // Initialize the JTextField array
 
         JLabel codeLabel = new JLabel("Gamecode: " + gamecode, SwingConstants.CENTER);
         codeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        bottomPanel.add(codeLabel);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(gamePanel, BorderLayout.CENTER);
-        mainPanel.add(codeLabel, BorderLayout.SOUTH);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
         setVisible(true);
@@ -63,6 +66,16 @@ public class GameView extends JFrame {
         this.gridId = grid.getId();
         this.gamecode = grid.getGameCode();
         this.myColor = Utils.convertStringToColor(user.getColor());
+
+        // Imposta il bordo della finestra colorato
+        getRootPane().setBorder(BorderFactory.createLineBorder(myColor, 8));
+
+        // Imposta il colore di sfondo dei pannelli
+        topPanel.setBackground(myColor);
+        bottomPanel.setBackground(myColor);
+        mainPanel.setBackground(myColor);
+        gamePanel.setBackground(myColor);
+
         this.gamePanel.removeAll();
 
         addWindowListener(new WindowAdapter() {
@@ -80,24 +93,23 @@ public class GameView extends JFrame {
         Cell[][] cells = grid.getGrid();
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
-                final int currentRow = row; // final variables for inner class
-                final int currentCol = col; // final variables for inner class
+                final int currentRow = row;
+                final int currentCol = col;
                 JTextField cellTextField = new JTextField(cells[currentRow][currentCol].getValue().isEmpty() ? "" : String.valueOf(cells[currentRow][currentCol].getValue().get()));
-                cellTextField.setHorizontalAlignment(JTextField.CENTER); // Align text to the center
+                cellTextField.setHorizontalAlignment(JTextField.CENTER);
                 cellTextField.setPreferredSize(new Dimension(50, 50));
 
-                // Set border for 3x3 grid
+                // Imposta il bordo per le sottogriglie 3x3
                 int top = (currentRow % 3 == 0) ? 4 : 1;
                 int left = (currentCol % 3 == 0) ? 4 : 1;
                 int bottom = (currentRow == 8) ? 4 : 0;
                 int right = (currentCol == 8) ? 4 : 0;
                 cellTextField.setBorder(new MatteBorder(top, left, bottom, right, Color.BLACK));
 
-                if(cells[currentRow][currentCol].isInitialSet()) {
-                    //cellTextField.setBackground(Color.LIGHT_GRAY);
+                if (cells[currentRow][currentCol].isInitialSet()) {
                     cellTextField.setEditable(false);
                     cellTextField.setFocusable(false);
-                } else if(grid.isCompleted()){
+                } else if (grid.isCompleted()) {
                     cellTextField.setFocusable(false);
                     cellTextField.setEditable(false);
                 } else {
@@ -141,6 +153,7 @@ public class GameView extends JFrame {
         gamePanel.revalidate();
         gamePanel.repaint();
     }
+
 
     private void updateCellValue(Grid grid, int row, int col, JTextField cellTextField, Rabbit user) throws IOException {
         try {

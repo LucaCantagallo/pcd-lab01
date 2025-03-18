@@ -11,9 +11,9 @@ public class Utils {
 
     public static String generateRandomColor() {
         Random random = new Random();
-        int red = random.nextInt(256);
-        int green = random.nextInt(256);
-        int blue = random.nextInt(256);
+        int red = random.nextInt(181);
+        int green = random.nextInt(181);
+        int blue = random.nextInt(181);
 
         return String.format("#%02X%02X%02X", red, green, blue);
     }
