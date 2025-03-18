@@ -48,7 +48,7 @@ public class StartController {
                 }
 
                 if (!gameCode.trim().isEmpty()) {
-                    //if (!HandlerMessageDBGameCode.isPresent(gameCode)) {
+                    if (user.isPresent(gameCode)) {
                         try {
                             user.createGrid(gameCode);
                             //TODO: collegare all view
@@ -59,10 +59,11 @@ public class StartController {
                         new GameController(user, gameView, startView, user.getAllGrids().size() - 1);
                         startView.setVisible(false);
                         gameView.setVisible(true);
+                        System.out.println(user.getGameCodeList());
                         return;
-                   // } else {
-                        //JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
-                    //}
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Un sudoku con lo stesso nome presente! Cambia gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null, "Non è stato inserito alcun gamecode! Inserire un gamecode.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }

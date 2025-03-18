@@ -287,8 +287,16 @@ public class Rabbit {
         return allGrids.get(index);
     }
 
-    public Grid getGridBYGameCode(String gameCode){
+    public Grid getGridByGameCode(String gameCode){
         return allGrids.stream().filter(grid -> grid.getGameCode().equals(gameCode)).findFirst().orElse(null);
+    }
+
+    public List<String> getGameCodeList(){
+        return allGrids.stream().map(Grid::getGameCode).collect(Collectors.toList());
+    }
+
+    public boolean isPresent(String gamecode){
+        return !this.getGameCodeList().contains(gamecode);
     }
 
 }
