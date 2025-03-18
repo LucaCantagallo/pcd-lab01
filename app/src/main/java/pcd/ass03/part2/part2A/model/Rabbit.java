@@ -296,7 +296,7 @@ public class Rabbit {
     }
 
     public boolean isPresent(String gamecode){
-        return !this.getGameCodeList().contains(gamecode);
+        return this.getGameCodeList().contains(gamecode);
     }
 
 }
