@@ -20,7 +20,7 @@ public class SudokuView extends JFrame {
         this.nomeutente = nomeutente;
         this.gamecode = gamecode;
         setTitle("Sudoku");
-        setSize(600, 700);
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -38,8 +38,7 @@ public class SudokuView extends JFrame {
             HandlerSingleSudoku.sendMessage(sudokuGrid);
         } else {
             String message= HandlerSingleSudoku.receiveMessage(gamecode);
-            System.out.println("GIOCA");
-            System.out.println(message);
+            //System.out.println(message);
             sudokuGrid = HandlerSingleSudoku.loadGrid(gamecode, message);
         }
         GameCodeDatabase.addGameCode(gamecode, sudokuGrid);

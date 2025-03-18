@@ -15,5 +15,6 @@ public class Main {
         StartView view = new StartView(user.getId());
         new StartController(view, user);
         view.setVisible(true);
+
     }
 }

@@ -22,24 +22,34 @@ public class GameView extends JFrame {
     private int currentSelectedCol = 0;
 
     public GameView(String title) {
-        setTitle("Player-" + title + " - Sudoku Grid Details");
-        setSize(800, 600);
+        setTitle("Player-" + title + " - Sudoku");
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        JPanel mainPanel = new JPanel(new BorderLayout());
+
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        backButton = new JButton("Back");
+        backButton = new JButton("Indietro");
         topPanel.add(backButton);
 
-        add(topPanel, BorderLayout.NORTH);
 
         gamePanel = new JPanel();
         gamePanel.setLayout(new GridLayout(9, 9));
-        add(gamePanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         cellTextFields = new JTextField[9][9]; // Initialize the JTextField array
+
+        JLabel codeLabel = new JLabel("Codice Sudoku: " + gridId, SwingConstants.CENTER);
+        codeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(gamePanel, BorderLayout.CENTER);
+        mainPanel.add(codeLabel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+        setVisible(true);
     }
 
 
@@ -81,7 +91,7 @@ public class GameView extends JFrame {
                 cellTextField.setBorder(new MatteBorder(top, left, bottom, right, Color.BLACK));
 
                 if(cells[currentRow][currentCol].isInitialSet()) {
-                    cellTextField.setBackground(Color.LIGHT_GRAY);
+                    //cellTextField.setBackground(Color.LIGHT_GRAY);
                     cellTextField.setEditable(false);
                     cellTextField.setFocusable(false);
                 } else if(grid.isCompleted()){
@@ -161,15 +171,18 @@ public class GameView extends JFrame {
             for (int col = 0; col < 9; col++) {
                 JTextField cellTextField = cellTextFields[row][col];
                 if (cellTextField != null) {
+
                     if(grid.isCompleted()){
                         cellTextField.setFocusable(false);
                         cellTextField.setEditable(false);
                     }
                     Optional<Integer> cellValue = cells[row][col].getValue();
+                    //cellTextField.setBackground(cellValue.isEmpty() ? Color.WHITE : Color.LIGHT_GRAY);
                     cellTextField.setText(cellValue.isEmpty() ? "" : String.valueOf((Integer) cellValue.get()));
                 }
             }
         }
+
     }
 
     public void colorCell(int gridId, int row, int col, Color color){
