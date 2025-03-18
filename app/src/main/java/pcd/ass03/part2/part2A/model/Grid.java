@@ -17,9 +17,11 @@ public class Grid {
     private boolean completed = false;
     private final String gameMatrix;
     private final String riddle;
+    private final String gameCode;
 
-    public Grid(int id) {
+    public Grid(int id, String gameCode) {
         this.id = id;
+        this.gameCode = gameCode;
         GameMatrix gm;
         Riddle r;
         gm = Creator.createFull();
@@ -34,10 +36,11 @@ public class Grid {
         }
     }
 
-    public Grid(int id, String gm, String r){
+    public Grid(int id, String gm, String r, String gameCode){
         this.id = id;
         this.gameMatrix=gm;
         this.riddle=gm;
+        this.gameCode = gameCode;
         List<String> gmList = new ArrayList<>();
         List<String> rList = new ArrayList<>();
         // Itera attraverso ogni carattere della stringa
@@ -118,5 +121,9 @@ public class Grid {
 
     public String getRiddle() {
         return riddle;
+    }
+
+    public String getGameCode() {
+        return gameCode;
     }
 }

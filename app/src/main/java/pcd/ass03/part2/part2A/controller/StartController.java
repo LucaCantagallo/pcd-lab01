@@ -35,7 +35,9 @@ public class StartController {
         @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
             try {
-                user.createGrid();
+                String gameCode = "prova";
+                user.createGrid(gameCode);
+                //TODO: collegare all view
             } catch (IOException | TimeoutException ex) {
                 throw new RuntimeException(ex);
             }

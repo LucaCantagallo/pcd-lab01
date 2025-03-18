@@ -16,5 +16,10 @@ public class Main {
         new StartController(view, user);
         view.setVisible(true);
 
+        Rabbit user1 = new Rabbit("2", "green");
+        StartView view1 = new StartView(user1.getId());
+        new StartController(view1, user1);
+        view1.setVisible(true);
+
     }
 }

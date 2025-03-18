@@ -125,9 +125,9 @@ public class Rabbit {
         return allGrids;
     }
 
-    public void createGrid() throws IOException, TimeoutException {
+    public void createGrid(String gameCode) throws IOException, TimeoutException {
         int gridId = allGrids.size() + 1;
-        Grid grid = new Grid(gridId);
+        Grid grid = new Grid(gridId, gameCode);
         allGrids.add(grid);
 
         publishGrid(grid);
@@ -285,6 +285,10 @@ public class Rabbit {
 
     public Grid getGrid(int index){
         return allGrids.get(index);
+    }
+
+    public Grid getGridBYGameCode(String gameCode){
+        return allGrids.stream().filter(grid -> grid.getGameCode().equals(gameCode)).findFirst().orElse(null);
     }
 
 }

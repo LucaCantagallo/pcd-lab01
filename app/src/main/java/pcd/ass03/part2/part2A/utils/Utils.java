@@ -21,6 +21,8 @@ public class Utils {
 
     public static String toString(Grid grid) {
         StringBuilder sb = new StringBuilder();
+        sb.append(grid.getGameCode());
+        sb.append(" ");
         sb.append(grid.getGameMatrix());
         sb.append(",");
         sb.append(grid.getRiddle());
@@ -29,10 +31,10 @@ public class Utils {
 
     public static Grid fromString(String message) {
         String[] parts = message.split(" ");
-        String[] parts2 = parts[1].split(",");
+        String[] parts2 = parts[2].split(",");
         System.out.println("fromString: " + parts2[0]);
         System.out.println("p");
-        return new Grid(Integer.parseInt(parts[0]), parts2[0], parts2[1]);
+        return new Grid(Integer.parseInt(parts[0]), parts2[0], parts2[1], parts[1]);
     }
 
 }
