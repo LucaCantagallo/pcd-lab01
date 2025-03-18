@@ -93,9 +93,9 @@ public class Rabbit {
         }
     }
 
-    private void notifyGridUpdated(int gridId) {
+    private void notifyGridUpdated(String gamecode) {
         for (GridUpdateListener listener : listeners) {
-            listener.onGridUpdated(gridId);
+            listener.onGridUpdated(gamecode);
         }
     }
 
@@ -189,6 +189,13 @@ public class Rabbit {
         }
     }
 
+    private String findGameCodeByGridId(int gridId) {
+        return allGrids.stream()
+                .filter(grid -> grid.getId() == gridId)
+                .map(Grid::getGameCode)
+                .findFirst().get();
+    }
+
     private DeliverCallback updateGridCallBack(){
         System.out.println("updateGridCallBack");
         return (consumerTag, delivery) -> {
@@ -200,7 +207,7 @@ public class Rabbit {
             int value = Integer.parseInt(parts[3]);
             try {
                 allGrids.get(gridId - 1).setCellValue(row, col, value);
-                notifyGridUpdated(gridId);
+                notifyGridUpdated(findGameCodeByGridId(gridId));
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Grid not found");
             }
@@ -290,6 +297,8 @@ public class Rabbit {
     public Grid getGridByGameCode(String gameCode){
         return allGrids.stream().filter(grid -> grid.getGameCode().equals(gameCode)).findFirst().orElse(null);
     }
+
+
 
     public List<String> getGameCodeList(){
         return allGrids.stream().map(Grid::getGameCode).collect(Collectors.toList());

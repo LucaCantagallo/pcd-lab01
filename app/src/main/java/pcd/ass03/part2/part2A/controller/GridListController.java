@@ -34,7 +34,7 @@ public class GridListController implements GridUpdateListener {
     }
 
     @Override
-    public void onGridUpdated(int gridIndex) {
+    public void onGridUpdated(String gamecode) {
 
     }
 
@@ -61,7 +61,7 @@ public class GridListController implements GridUpdateListener {
         public void actionPerformed(ActionEvent e) {
             int gridIndex = Integer.parseInt(e.getActionCommand().split(" ")[1]) - 1;
             detailsView = new GameView(user.getId(), gamecode);
-            new GameController(user, detailsView, startView, gridIndex);
+            new GameController(user, detailsView, startView, gamecode);
             detailsView.setVisible(true);
             startView.setVisible(false);
             gridListView.setVisible(false);

@@ -11,15 +11,15 @@ public class GameController implements GridUpdateListener{
     private final GameView gameView;
     private final StartView startView;
     private final Rabbit user;
-    private final int selectedGrid;
+    private String gamecode;
 
-    public GameController(Rabbit user, GameView gameView, StartView startView, int selectedGrid) {
+    public GameController(Rabbit user, GameView gameView, StartView startView, String gamecode) {
         this.user = user;
         this.gameView = gameView;
         this.startView = startView;
-        this.selectedGrid = selectedGrid;
+        this.gamecode = gamecode;
         user.addGridUpdateListener(this);
-        gameView.displayGrid(user.getGrid(selectedGrid), user);
+        gameView.displayGrid(user.getGridByGameCode(gamecode), user);
         gameView.addBackButtonListener(new BackButtonListener());
     }
 
@@ -28,30 +28,34 @@ public class GameController implements GridUpdateListener{
 
     }
 
+    private boolean rightGrid(String gamecode){
+        return this.gamecode.equals(gamecode);
+    }
+
     @Override
-    public void onGridUpdated(int gridIndex) {
-        if (gameView.isVisible() && this.selectedGrid == (gridIndex - 1)) {
-            gameView.updateGrid(user.getGrid(gridIndex - 1));
+    public void onGridUpdated(String gamecode) {
+        if (gameView.isVisible() && rightGrid(gamecode)) {
+            gameView.updateGrid(user.getGridByGameCode(gamecode));
         }
     }
 
     @Override
     public void onCellSelected(int gridId, int row, int col, Color color, String userId) {
-        if (gameView.isVisible() && this.selectedGrid == (gridId - 1)) {
+        if (gameView.isVisible() && rightGrid(gamecode)) {
             gameView.colorCell(gridId, row, col, color);
         }
     }
 
     @Override
     public void onCellUnselected(int gridId, int row, int col) {
-        if (gameView.isVisible() && this.selectedGrid == (gridId - 1)) {
+        if (gameView.isVisible() && rightGrid(gamecode)) {
             gameView.uncoloredCell(row, col);
         }
     }
 
     @Override
     public void onGridCompleted(int gridId, String userId) {
-        if (gameView.isVisible() && this.selectedGrid == gridId) {
+        if (gameView.isVisible() && rightGrid(gamecode)) {
             if (userId.equals(user.getId())) {
                 return;
             }

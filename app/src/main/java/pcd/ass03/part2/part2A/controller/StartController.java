@@ -15,6 +15,7 @@ public class StartController {
 
     private final StartView startView;
     private final Rabbit user;
+    private GameView detailsView;
 
     public StartController(StartView startView, Rabbit user) {
         this.startView = startView;
@@ -36,14 +37,17 @@ public class StartController {
                     return; // Esci dal metodo se l'utente ha annullato o chiuso la finestra
                 }
 
-                if (gameCode != null && !gameCode.trim().isEmpty()) {
+                if (!gameCode.trim().isEmpty()) {
                     if (user.isPresent(gameCode)) {
                         startView.setVisible(false);
                         //CAMBIA DA QUI
-                        GridListView gridListView = new GridListView(user.getId());
-                        new GridListController(user, startView, gridListView);
+                        detailsView = new GameView(user.getId(), gameCode);
+                        new GameController(user, detailsView, startView, gameCode);
+                        detailsView.setVisible(true);
+                        startView.setVisible(false);
+                        //GridListView gridListView = new GridListView(user.getId());
+                        //new GridListController(user, startView, gridListView);
                         //A QUI
-                        gridListView.setVisible(true);
                         return;
                     } else {
                         JOptionPane.showMessageDialog(null, "Il gamecode inserito non ha trovato nessuna corrispondenza! Riprova.", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -78,7 +82,7 @@ public class StartController {
                             throw new RuntimeException(ex);
                         }
                         GameView gameView = new GameView(user.getId(), gameCode);
-                        new GameController(user, gameView, startView, user.getAllGrids().size() - 1);
+                        new GameController(user, gameView, startView, gameCode);
                         startView.setVisible(false);
                         gameView.setVisible(true);
                         System.out.println(user.getGameCodeList());
