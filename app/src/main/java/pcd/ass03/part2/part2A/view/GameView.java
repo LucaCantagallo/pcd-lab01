@@ -37,6 +37,7 @@ public class GameView extends JFrame {
 
         gamePanel = new JPanel();
         gamePanel.setLayout(new GridLayout(9, 9));
+        //getContentPane().setBackground(myColor);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
@@ -61,7 +62,7 @@ public class GameView extends JFrame {
     public void displayGrid(Grid grid, Rabbit user) {
         this.gridId = grid.getId();
         this.gamecode = grid.getGameCode();
-        this.myColor = Utils.getColorByName(user.getColor());
+        this.myColor = Utils.convertStringToColor(user.getColor());
         this.gamePanel.removeAll();
 
         addWindowListener(new WindowAdapter() {

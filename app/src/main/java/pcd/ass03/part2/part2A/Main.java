@@ -13,17 +13,14 @@ import java.util.concurrent.TimeoutException;
 public class Main {
     public static void main(String[] args) throws IOException, TimeoutException {
 
-        System.out.println("dio");
-        Rabbit user = new Rabbit("1", "yellow");
+        for(int i = 0; i < 2; i++){
+            Rabbit user = new Rabbit(i+"");
+            StartView view = new StartView(user.getId());
+            new StartController(view, user);
+            view.setVisible(true);
+        }
 
-        StartView view = new StartView(user.getId());
-        new StartController(view, user);
-        view.setVisible(true);
-//
-        Rabbit user1 = new Rabbit("2", "green");
-        StartView view1 = new StartView(user1.getId());
-        new StartController(view1, user1);
-        view1.setVisible(true);
+
 
     }
 }

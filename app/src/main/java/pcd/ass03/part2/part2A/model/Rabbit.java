@@ -29,9 +29,9 @@ public class Rabbit {
     private final List<GridUpdateListener> listeners;
     private final String color;
 
-    public Rabbit(String id, String color) throws IOException, TimeoutException {
+    public Rabbit(String id) throws IOException, TimeoutException {
         this.id = id;
-        this.color = color;
+        this.color = Utils.generateRandomColor();
         this.allGrids = new ArrayList<>();
         this.listeners = new ArrayList<>();
 
@@ -267,7 +267,7 @@ public class Rabbit {
             int gridId = Integer.parseInt(parts[0]);
             int row = Integer.parseInt(parts[1]);
             int col = Integer.parseInt(parts[2]);
-            Color color = Utils.getColorByName(parts[3]);
+            Color color = Utils.convertStringToColor(parts[3]);
             String idUser = parts[4];
             this.notifyCellSelected(gridId, row, col, color, idUser);
         };
