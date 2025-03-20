@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
@@ -82,14 +83,15 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         return allGrids.containsKey(gameCode);
     }
 
-    @Override
-    public Grid getGrid(int gridId) {
-        return null;
-    } // TODO: se serve implementare
 
     @Override
     public Grid getGridByGameCode(String gameCode) {
         return allGrids.get(gameCode);
+    }
+
+    @Override
+    public List<String> getGameCodeList() throws RemoteException {
+        return allGrids.keySet().stream().collect(Collectors.toList());
     }
 
 

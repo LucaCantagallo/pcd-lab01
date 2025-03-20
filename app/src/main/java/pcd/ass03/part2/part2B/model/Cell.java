@@ -1,9 +1,10 @@
 package pcd.ass03.part2.part2B.model;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Optional;
 
-public class Cell {
+public class Cell implements Serializable{
 
     private Optional<Integer> value;
     private int hiddenValue;

@@ -5,12 +5,13 @@ import de.sfuhrm.sudoku.GameMatrix;
 import de.sfuhrm.sudoku.Riddle;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Grid {
+public class Grid implements Serializable {
 
     private final int id;
     private final Cell[][] grid;

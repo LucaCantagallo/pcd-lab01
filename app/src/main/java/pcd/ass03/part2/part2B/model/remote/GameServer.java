@@ -4,6 +4,7 @@ import pcd.ass03.part2.part2B.model.Grid;
 import java.awt.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface GameServer extends Remote {
 
@@ -13,13 +14,14 @@ public interface GameServer extends Remote {
 
     void updateGrid(String gameCode, int row, int col, int value) throws RemoteException;
 
+
     void selectCell(String gameCode, int row, int col, Color color) throws RemoteException;
 
     void unselectCell(String gameCode, int row, int col) throws RemoteException;
 
-    Grid getGrid(int gridId) throws RemoteException;
-
     Boolean existsGrid(String gameCode) throws RemoteException;
 
     Grid getGridByGameCode(String gameCode) throws RemoteException;
+
+    List<String> getGameCodeList() throws RemoteException;
 }
