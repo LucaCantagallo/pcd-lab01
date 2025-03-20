@@ -4,7 +4,7 @@ import java.awt.*;
 
 public interface GridUpdateListener {
     void onGridCreated();
-    void onGridUpdated(int gridIndex);
+    void onGridUpdated(String gamecode);
     void onCellSelected(int gridId, int row, int col, Color color);
     void onCellUnselected(int gridId, int row, int col);
 }
