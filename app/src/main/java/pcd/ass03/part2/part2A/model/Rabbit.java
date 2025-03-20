@@ -29,9 +29,9 @@ public class Rabbit {
     private final List<GridUpdateListener> listeners;
     private final String color;
 
-    public Rabbit(String id, String color) throws IOException, TimeoutException {
+    public Rabbit(String id) throws IOException, TimeoutException {
         this.id = id;
-        this.color = color;
+        this.color = Utils.generateRandomColor();
         this.allGrids = new ArrayList<>();
         this.listeners = new ArrayList<>();
 
@@ -93,9 +93,9 @@ public class Rabbit {
         }
     }
 
-    private void notifyGridUpdated(int gridId) {
+    private void notifyGridUpdated(String gamecode) {
         for (GridUpdateListener listener : listeners) {
-            listener.onGridUpdated(gridId);
+            listener.onGridUpdated(gamecode);
         }
     }
 
@@ -189,6 +189,13 @@ public class Rabbit {
         }
     }
 
+    private String findGameCodeByGridId(int gridId) {
+        return allGrids.stream()
+                .filter(grid -> grid.getId() == gridId)
+                .map(Grid::getGameCode)
+                .findFirst().get();
+    }
+
     private DeliverCallback updateGridCallBack(){
         System.out.println("updateGridCallBack");
         return (consumerTag, delivery) -> {
@@ -200,7 +207,7 @@ public class Rabbit {
             int value = Integer.parseInt(parts[3]);
             try {
                 allGrids.get(gridId - 1).setCellValue(row, col, value);
-                notifyGridUpdated(gridId);
+                notifyGridUpdated(findGameCodeByGridId(gridId));
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Grid not found");
             }
@@ -260,7 +267,7 @@ public class Rabbit {
             int gridId = Integer.parseInt(parts[0]);
             int row = Integer.parseInt(parts[1]);
             int col = Integer.parseInt(parts[2]);
-            Color color = Utils.getColorByName(parts[3]);
+            Color color = Utils.convertStringToColor(parts[3]);
             String idUser = parts[4];
             this.notifyCellSelected(gridId, row, col, color, idUser);
         };
@@ -287,8 +294,18 @@ public class Rabbit {
         return allGrids.get(index);
     }
 
-    public Grid getGridBYGameCode(String gameCode){
+    public Grid getGridByGameCode(String gameCode){
         return allGrids.stream().filter(grid -> grid.getGameCode().equals(gameCode)).findFirst().orElse(null);
+    }
+
+
+
+    public List<String> getGameCodeList(){
+        return allGrids.stream().map(Grid::getGameCode).collect(Collectors.toList());
+    }
+
+    public boolean isPresent(String gamecode){
+        return this.getGameCodeList().contains(gamecode);
     }
 
 }
