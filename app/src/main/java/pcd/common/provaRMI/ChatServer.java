@@ -1,11 +1,14 @@
 package pcd.common.provaRMI;
 
+import pcd.ass03.part2.part2B.model.Grid;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class ChatServer extends UnicastRemoteObject implements ChatService {
+    private final Grid grid = new Grid(10, "prova");
 
     protected ChatServer() throws RemoteException {
         super();
@@ -15,6 +18,11 @@ public class ChatServer extends UnicastRemoteObject implements ChatService {
     public String sendMessage(String message) throws RemoteException {
         System.out.println("Messaggio ricevuto dal client: " + message);
         return "Server: Ricevuto il tuo messaggio - " + message;
+    }
+
+    @Override
+    public Grid getGrid() throws RemoteException {
+        return grid;
     }
 
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package pcd.common.provaRMI;
 
+import pcd.ass03.part2.part2B.model.Grid;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -15,6 +17,8 @@ public class ChatClient {
             // Inviamo un messaggio al server
             String response = stub.sendMessage("Ciao Server!");
             System.out.println("Risposta dal server: " + response);
+            Grid grid = stub.getGrid();
+            System.out.println("Grid: " + grid);
         } catch (Exception e) {
             e.printStackTrace();
         }
