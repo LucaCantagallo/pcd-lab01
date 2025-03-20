@@ -33,6 +33,7 @@ public class GameServerImpl extends UnicastRemoteObject implements GameServer {
         int gridId = allGrids.size();
         Grid grid = new Grid(gridId, gameCode);
         allGrids.put(gameCode, grid);
+        System.out.println(allGrids.keySet());
         for (UserCallback callback : users) {
             try {
                 callback.onGridCreated();
