@@ -1,0 +1,26 @@
+package pcd.ass03.part2.part2B.model.remote;
+
+import pcd.ass03.part2.part2B.model.Grid;
+import java.awt.*;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
+
+public interface GameManager extends Remote {
+
+    void registerCallback(UserCallback userCallback) throws RemoteException;
+
+    void createGrid(String gameCode) throws RemoteException;
+
+    void updateGrid(int gridId, int row, int col, int value) throws RemoteException;
+
+    void selectCell(int gridId, int row, int col, Color color) throws RemoteException;
+
+    void unselectCell(int gridId, int row, int col) throws RemoteException;
+
+    List<Grid> getAllGrids() throws RemoteException;
+
+    Grid getGrid(int gridId) throws RemoteException;
+
+    Grid getGridByGameCode(String gameCode) throws RemoteException;
+}
