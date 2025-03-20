@@ -5,17 +5,19 @@ import pcd.ass03.part2.part2B.model.Grid;
 
 import java.awt.*;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameServerImpl implements GameServer {
+public class GameServerImpl extends UnicastRemoteObject implements GameServer {
 
     private final Map<String, Grid> allGrids;
     private final List<UserCallback> users;
 
-    public GameServerImpl() {
+    public GameServerImpl() throws RemoteException {
+        super();
         this.allGrids = new HashMap<>();
         this.users = new ArrayList<>();
     }
@@ -89,4 +91,6 @@ public class GameServerImpl implements GameServer {
     public Grid getGridByGameCode(String gameCode) {
         return allGrids.get(gameCode);
     }
+
+
 }
