@@ -13,16 +13,16 @@ import java.util.Map;
 public class GameServerImpl implements GameServer {
 
     private final Map<String, Grid> allGrids;
-    private final List<UserCallback> callbacks;
+    private final List<UserCallback> users;
 
     public GameServerImpl() {
         this.allGrids = new HashMap<>();
-        this.callbacks = new ArrayList<>();
+        this.users = new ArrayList<>();
     }
 
     @Override
     public void registerCallback(UserCallback userCallback) {
-        callbacks.add(userCallback);
+        users.add(userCallback);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class GameServerImpl implements GameServer {
         int gridId = allGrids.size();
         Grid grid = new Grid(gridId, gameCode);
         allGrids.put(gameCode, grid);
-        for (UserCallback callback : callbacks) {
+        for (UserCallback callback : users) {
             try {
                 callback.onGridCreated();
             } catch (RemoteException e) {
@@ -42,7 +42,7 @@ public class GameServerImpl implements GameServer {
     @Override
     public synchronized void updateGrid(String gameCode, int row, int col, int value) {
         allGrids.get(gameCode).setCellValue(row, col, value);
-        for (UserCallback callback : callbacks) {
+        for (UserCallback callback : users) {
             try {
                 callback.onGridUpdate(gameCode);
             } catch (RemoteException e) {
@@ -54,7 +54,7 @@ public class GameServerImpl implements GameServer {
     @Override
     public synchronized void selectCell(String gameCode, int row, int col, Color color) {
         allGrids.get(gameCode).setColor(row, col, color);
-        for (UserCallback callback : callbacks) {
+        for (UserCallback callback : users) {
             try {
                 callback.onCellSelected(gameCode, row, col, color);
             } catch (RemoteException e) {
@@ -66,7 +66,7 @@ public class GameServerImpl implements GameServer {
     @Override
     public synchronized void unselectCell(String gameCode, int row, int col) {
         allGrids.get(gameCode).setColor(row, col, Color.WHITE);
-        for (UserCallback callback : callbacks) {
+        for (UserCallback callback : users) {
             try {
                 callback.onCellUnselected(gameCode, row, col);
             } catch (RemoteException e) {
