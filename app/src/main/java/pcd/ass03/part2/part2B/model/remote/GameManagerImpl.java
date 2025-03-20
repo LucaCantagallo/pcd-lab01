@@ -17,9 +17,9 @@ public class GameManagerImpl implements GameManager{
     }
 
     @Override
-    public synchronized void createGrid() {
+    public synchronized void createGrid(String gameCode) {
         int gridId = allGrids.size();
-        Grid grid = new Grid(gridId);
+        Grid grid = new Grid(gridId, String gameCode);
         allGrids.add(grid);
         for (UserCallback callback : callbacks) {
             try {
