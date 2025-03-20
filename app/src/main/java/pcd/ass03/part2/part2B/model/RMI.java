@@ -1,73 +1,108 @@
 package pcd.ass03.part2.part2B.model;
 
+import pcd.ass03.part2.part2B.controller.GameController;
 import pcd.ass03.part2.part2B.model.remote.GameServer;
 import pcd.ass03.part2.part2B.model.remote.GameServerImpl;
 import pcd.ass03.part2.part2B.utils.Utils;
 import pcd.ass03.part2.part2B.controller.GridUpdateListener;
 
 import java.awt.*;
-import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public class RMI implements Serializable {
 
-    private final String id;
+    private final String username;
     private final List<GridUpdateListener> listeners;
     private final Color color;
     private final GameServer gameServer;
 
-    public RMI(String id) throws RemoteException {
-        this.id = id;
+    public RMI(String username) {
+        this.username = username;
         this.listeners = new ArrayList<>();
         this.color = Utils.convertStringToColor(Utils.generateRandomColor());
-        this.gameServer = new GameServerImpl();
+        try {
+            this.gameServer = new GameServerImpl();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Color getColor() {
         return this.color;
     }
 
-    public String getId() {
-        return this.id;
+    public String getUsername() {
+        return this.username;
     }
 
 
-    public void createGrid(String gameCode) throws IOException, TimeoutException {
-        gameServer.createGrid(gameCode);
+    public void createGrid(String gameCode) {
+        try {
+            gameServer.createGrid(gameCode);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
-    public void updateGrid(String gameCode, int row, int col, int value) throws IOException {
-        gameServer.updateGrid(gameCode, row, col, value);
+    public void updateGrid(String gameCode, int row, int col, int value) {
+        try {
+            gameServer.updateGrid(gameCode, row, col, value);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void selectCell(String gamecode, int row, int col) throws IOException {
-        gameServer.selectCell(gamecode, row, col, color);
+    public void selectCell(String gamecode, int row, int col) {
+        try {
+            gameServer.selectCell(gamecode, row, col, color);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void unselectCell(String gamecode, int row, int col) throws IOException {
-        gameServer.unselectCell(gamecode, row, col);
+    public void unselectCell(String gamecode, int row, int col){
+        try {
+            gameServer.unselectCell(gamecode, row, col);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
-    public int cellHiddenValue(String gamecode, int row, int col) throws RemoteException {
-        return gameServer.getGridByGameCode(gamecode).getHiddenValue(row, col);
+    public int cellHiddenValue(String gamecode, int row, int col) {
+        try {
+            return gameServer.getGridByGameCode(gamecode).getHiddenValue(row, col);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public Grid getGridByGameCode(String gameCode) throws RemoteException {
-        return gameServer.getGridByGameCode(gameCode);
+    public Grid getGridByGameCode(String gameCode){
+        try {
+            return gameServer.getGridByGameCode(gameCode);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<String> getGameCodeList() throws RemoteException {
-        return gameServer.getGameCodeList();
+    public List<String> getGameCodeList() {
+        try {
+            return gameServer.getGameCodeList();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public boolean isPresent(String gamecode) throws RemoteException {
-        return gameServer.existsGrid(gamecode);
+    public boolean isPresent(String gamecode) {
+        try {
+            return gameServer.existsGrid(gamecode);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void notifyGridCreated() {
@@ -92,5 +127,9 @@ public class RMI implements Serializable {
         for (GridUpdateListener listener : listeners) {
             listener.onCellUnselected(gameCode, row, col);
         }
+    }
+
+    public void addGridUpdateListener(GridUpdateListener listener) {
+        listeners.add(listener);
     }
 }

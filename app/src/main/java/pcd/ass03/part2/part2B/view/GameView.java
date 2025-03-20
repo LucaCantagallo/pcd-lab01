@@ -1,9 +1,8 @@
 package pcd.ass03.part2.part2B.view;
 
-import pcd.ass03.part2.part2A.model.Cell;
-import pcd.ass03.part2.part2A.model.Grid;
-import pcd.ass03.part2.part2A.model.Rabbit;
-import pcd.ass03.part2.part2A.utils.Utils;
+import pcd.ass03.part2.part2B.model.Cell;
+import pcd.ass03.part2.part2B.model.Grid;
+import pcd.ass03.part2.part2B.model.RMI;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -62,10 +61,10 @@ public class GameView extends JFrame {
         backButton.addActionListener(listener);
     }
 
-    public void displayGrid(Grid grid, Rabbit user) {
+    public void displayGrid(Grid grid, RMI user) {
         this.gridId = grid.getId();
         this.gamecode = grid.getGameCode();
-        this.myColor = Utils.convertStringToColor(user.getColor());
+        this.myColor = user.getColor();
 
 
         // Imposta il colore di sfondo dei pannelli
@@ -79,11 +78,7 @@ public class GameView extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                try {
-                    user.unselectCell(gridId, currentSelectedRow, currentSelectedCol);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                user.unselectCell(gamecode, currentSelectedRow, currentSelectedCol);
                 dispose();
             }
         });
@@ -124,20 +119,16 @@ public class GameView extends JFrame {
                     cellTextField.addFocusListener(new FocusAdapter() {
                         @Override
                         public void focusGained(FocusEvent e) {
-                            try {
-                                user.selectCell(grid.getId(), currentRow, currentCol);
-                                currentSelectedRow = currentRow;
-                                currentSelectedCol = currentCol;
-                            } catch (IOException ex) {
-                                throw new RuntimeException(ex);
-                            }
+                            user.selectCell(grid.getGameCode(), currentRow, currentCol);
+                            currentSelectedRow = currentRow;
+                            currentSelectedCol = currentCol;
                         }
 
                         @Override
                         public void focusLost(FocusEvent e) {
                             try {
                                 updateCellValue(grid, currentRow, currentCol, cellTextField, user);
-                                user.unselectCell(grid.getId(), currentRow, currentCol);
+                                user.unselectCell(grid.getGameCode(), currentRow, currentCol);
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -153,18 +144,18 @@ public class GameView extends JFrame {
     }
 
 
-    private void updateCellValue(Grid grid, int row, int col, JTextField cellTextField, Rabbit user) throws IOException {
+    private void updateCellValue(Grid grid, int row, int col, JTextField cellTextField, RMI user) throws IOException {
         try {
             if(cellTextField.getText().isEmpty()){
-                user.updateGrid(grid.getId(), row, col, Integer.parseInt(cellTextField.getText()));
+                user.updateGrid(grid.getGameCode(), row, col, Integer.parseInt(cellTextField.getText()));
                 return;
             }
             int newValue = Integer.parseInt(cellTextField.getText());
             if (newValue >= 1 && newValue <= 9) {
-                if(newValue == user.cellHiddenValue(grid.getId(), row, col)){
-                    user.updateGrid(grid.getId(), row, col, Integer.parseInt(cellTextField.getText()));
+                if(newValue == user.cellHiddenValue(grid.getGameCode(), row, col)){
+                    user.updateGrid(grid.getGameCode(), row, col, Integer.parseInt(cellTextField.getText()));
                 }else{
-                    JOptionPane.showMessageDialog(this, "error value " + user.cellHiddenValue(grid.getId(), row, col));
+                    JOptionPane.showMessageDialog(this, "error value " + user.cellHiddenValue(grid.getGameCode(), row, col));
                     cellTextField.setText("");
                 }
             } else {
@@ -199,8 +190,8 @@ public class GameView extends JFrame {
 
     }
 
-    public void colorCell(int gridId, int row, int col, Color color){
-        if(this.gridId == gridId){
+    public void colorCell(String gamecode, int row, int col, Color color){
+        if(this.gamecode.equals(gamecode)){
             cellTextFields[row][col].setBackground(color);
             cellTextFields[row][col].setEditable(myColor.equals(color));
         }
