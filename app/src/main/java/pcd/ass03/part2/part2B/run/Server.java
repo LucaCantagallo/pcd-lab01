@@ -15,15 +15,31 @@ public class Server {
     public static void main(String[] args) {
         try {
             // Creiamo un'istanza del server
-            GameServer server = new GameServerImpl();
+            //GameServer server = new GameServerImpl();
+//
+            //// Creiamo il registro RMI sulla porta 1099 (default)
+            //Registry registry = LocateRegistry.createRegistry(1099);
+//
+            //// Registriamo il servizio con il nome "ChatService"
+            //registry.rebind("GameServer", server);
+//
+            //System.out.println("Server RMI avviato...");
 
-            // Creiamo il registro RMI sulla porta 1099 (default)
-            Registry registry = LocateRegistry.createRegistry(1099);
 
-            // Registriamo il servizio con il nome "ChatService"
-            registry.rebind("GameServer", server);
+            LocateRegistry.createRegistry(1099);
+            // Crea l'oggetto remoto
+            GameServer gameManager = new GameServerImpl();
 
-            System.out.println("Server RMI avviato...");
+            // Esporta l'oggetto remoto su una porta libera
+            GameServer stub = (GameServer) UnicastRemoteObject.exportObject(gameManager, 0);
+
+            // Ottieni il registro RMI
+            Registry registry = LocateRegistry.getRegistry();
+
+            // Registra il servizio nel registro RMI
+            registry.rebind("GameService", stub);
+
+            System.out.println("🚀 Server RMI avviato sulla porta 1099...");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
