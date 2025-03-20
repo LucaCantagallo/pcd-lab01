@@ -3,12 +3,16 @@ package pcd.ass03.part2.part2B.model;
 import pcd.ass03.part2.part2B.controller.GameController;
 import pcd.ass03.part2.part2B.model.remote.GameServer;
 import pcd.ass03.part2.part2B.model.remote.GameServerImpl;
+import pcd.ass03.part2.part2B.model.remote.UserCallbackImpl;
 import pcd.ass03.part2.part2B.utils.Utils;
 import pcd.ass03.part2.part2B.controller.GridUpdateListener;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +23,13 @@ public class RMI implements Serializable {
     private final Color color;
     private final GameServer gameServer;
 
-    public RMI(String username) {
+    public RMI(String username) throws RemoteException, NotBoundException {
         this.username = username;
         this.listeners = new ArrayList<>();
         this.color = Utils.convertStringToColor(Utils.generateRandomColor());
-        try {
-            this.gameServer = new GameServerImpl();
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        Registry registry = LocateRegistry.getRegistry();
+        gameServer = (GameServer) registry.lookup("GameService");
+        gameServer.registerCallback(new UserCallbackImpl(this));
     }
 
     public Color getColor() {

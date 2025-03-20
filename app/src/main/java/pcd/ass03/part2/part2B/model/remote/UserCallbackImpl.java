@@ -5,7 +5,7 @@ import pcd.ass03.part2.part2B.model.RMI;
 import java.awt.*;
 import java.rmi.RemoteException;
 
-public class UserCallbackImpl implements UserCallback{
+public class UserCallbackImpl implements UserCallback {
 
     private final RMI user;
 

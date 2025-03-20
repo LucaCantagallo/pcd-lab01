@@ -2,11 +2,12 @@ package pcd.ass03.part2.part2B.model.remote;
 
 import pcd.ass03.part2.part2B.model.Grid;
 import java.awt.*;
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public interface GameServer extends Remote {
+public interface GameServer extends Remote, Serializable {
 
     void registerCallback(UserCallback userCallback) throws RemoteException;
 

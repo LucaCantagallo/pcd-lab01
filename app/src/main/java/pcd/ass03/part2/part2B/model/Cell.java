@@ -6,23 +6,23 @@ import java.util.Optional;
 
 public class Cell implements Serializable{
 
-    private Optional<Integer> value;
+    private SerializableOptional<Integer> value;
     private int hiddenValue;
     private final boolean initialSet;
     private Color actualColor;
 
     public Cell(Optional<Integer> value, int hiddenValue) {
-        this.value = value;
+        this.value = new SerializableOptional<>(value);
         this.hiddenValue = hiddenValue;
-        this.initialSet = this.value.isPresent();
+        this.initialSet = this.value.getOptional().isPresent();
     }
 
     public Optional<Integer> getValue(){
-        return value;
+        return value.getOptional();
     }
 
     public void setValue(int value){
-        this.value = Optional.of(value);
+        this.value = new SerializableOptional<>(Optional.of(value));
     }
 
     public boolean isInitialSet(){

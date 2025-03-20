@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GameServerImpl extends UnicastRemoteObject implements GameServer {
+public class GameServerImpl implements GameServer {
 
     private final Map<String, Grid> allGrids;
     private final List<UserCallback> users;
