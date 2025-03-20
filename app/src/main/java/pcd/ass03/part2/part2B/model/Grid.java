@@ -4,6 +4,7 @@ import de.sfuhrm.sudoku.Creator;
 import de.sfuhrm.sudoku.GameMatrix;
 import de.sfuhrm.sudoku.Riddle;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -124,5 +125,13 @@ public class Grid {
 
     public String getGameCode() {
         return gameCode;
+    }
+
+    public Color getColor(int row, int col){
+        return grid[row][col].getColor();
+    }
+
+    public void setColor(int row, int col, Color color){
+        grid[row][col].setColor(color);
     }
 }

@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 
 public interface UserCallback extends Remote {
     void onGridCreated() throws RemoteException;
-    void onGridUpdate(int gridId) throws RemoteException;
-    void onCellSelected(int gridId, int row, int col, Color color) throws RemoteException;
-    void onCellUnselected(int gridId, int row, int col) throws RemoteException;
+    void onGridUpdate(String gameCode) throws RemoteException;
+    void onCellSelected(String gameCode, int row, int col, Color color) throws RemoteException;
+    void onCellUnselected(String gameCode, int row, int col) throws RemoteException;
 }

@@ -1,5 +1,6 @@
 package pcd.ass03.part2.part2B.model;
 
+import java.awt.*;
 import java.util.Optional;
 
 public class Cell {
@@ -7,6 +8,7 @@ public class Cell {
     private Optional<Integer> value;
     private int hiddenValue;
     private final boolean initialSet;
+    private Color actualColor;
 
     public Cell(Optional<Integer> value, int hiddenValue) {
         this.value = value;
@@ -28,5 +30,13 @@ public class Cell {
 
     public int getHiddenValue() {
         return hiddenValue;
+    }
+
+    public Color getColor() {
+        return actualColor;
+    }
+
+    public void setColor(Color actualColor) {
+        this.actualColor = actualColor;
     }
 }
