@@ -5,6 +5,6 @@ import java.awt.*;
 public interface GridUpdateListener {
     void onGridCreated();
     void onGridUpdated(String gamecode);
-    void onCellSelected(int gridId, int row, int col, Color color);
-    void onCellUnselected(int gridId, int row, int col);
+    void onCellSelected(String gamecode, int row, int col, Color color);
+    void onCellUnselected(String gamecode, int row, int col);
 }

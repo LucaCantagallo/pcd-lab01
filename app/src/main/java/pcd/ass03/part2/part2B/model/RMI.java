@@ -7,12 +7,13 @@ import pcd.ass03.part2.part2B.controller.GridUpdateListener;
 
 import java.awt.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-public class RMI {
+public class RMI implements Serializable {
 
     private final String id;
     private final List<GridUpdateListener> listeners;
@@ -67,5 +68,29 @@ public class RMI {
 
     public boolean isPresent(String gamecode) throws RemoteException {
         return gameServer.existsGrid(gamecode);
+    }
+
+    public void notifyGridCreated() {
+        for (GridUpdateListener listener : listeners) {
+            listener.onGridCreated();
+        }
+    }
+
+    public void notifyGridUpdated(String gameCode) {
+        for (GridUpdateListener listener : listeners) {
+            listener.onGridUpdated(gameCode);
+        }
+    }
+
+    public void notifyCellSelected(String gameCode, int row, int col, Color color) {
+        for (GridUpdateListener listener : listeners) {
+            listener.onCellSelected(gameCode, row, col, color);
+        }
+    }
+
+    public void notifyCellUnselect(String gameCode, int row, int col) {
+        for (GridUpdateListener listener : listeners) {
+            listener.onCellUnselected(gameCode, row, col);
+        }
     }
 }
