@@ -30,6 +30,7 @@ public class GameController implements GridUpdateListener{
     }
 
     private boolean rightGrid(String gamecode){
+        System.out.println(this.gamecode.equals(gamecode));
         return this.gamecode.equals(gamecode);
     }
 

@@ -34,6 +34,7 @@ public class GameServerImpl implements GameServer {
         Grid grid = new Grid(gridId, gameCode);
         allGrids.put(gameCode, grid);
         System.out.println(allGrids.keySet());
+        System.out.println(users.size());
         for (UserCallback callback : users) {
             try {
                 callback.onGridCreated();
@@ -58,8 +59,10 @@ public class GameServerImpl implements GameServer {
     @Override
     public synchronized void selectCell(String gameCode, int row, int col, Color color) {
         allGrids.get(gameCode).setColor(row, col, color);
+        System.out.println("select cell");
         for (UserCallback callback : users) {
             try {
+                System.out.println("faccio call back");
                 callback.onCellSelected(gameCode, row, col, color);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);

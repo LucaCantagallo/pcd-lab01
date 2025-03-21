@@ -27,6 +27,7 @@ public class RMI implements Serializable {
         this.username = username;
         this.listeners = new ArrayList<>();
         this.color = Utils.convertStringToColor(Utils.generateRandomColor());
+
         Registry registry = LocateRegistry.getRegistry();
         gameServer = (GameServer) registry.lookup("GameService");
         gameServer.registerCallback(new UserCallbackImpl(this));
@@ -120,6 +121,7 @@ public class RMI implements Serializable {
     }
 
     public void notifyCellSelected(String gameCode, int row, int col, Color color) {
+        System.out.println("va: " + listeners);
         for (GridUpdateListener listener : listeners) {
             listener.onCellSelected(gameCode, row, col, color);
         }
@@ -132,6 +134,7 @@ public class RMI implements Serializable {
     }
 
     public void addGridUpdateListener(GridUpdateListener listener) {
+        System.out.println("ci vado?");
         listeners.add(listener);
     }
 }
