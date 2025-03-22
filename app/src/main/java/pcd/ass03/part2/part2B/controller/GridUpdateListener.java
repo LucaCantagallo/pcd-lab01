@@ -7,4 +7,5 @@ public interface GridUpdateListener {
     void onGridUpdated(String gamecode);
     void onCellSelected(String gamecode, int row, int col, Color color);
     void onCellUnselected(String gamecode, int row, int col);
+    void onGridSubmitted(String gamecode, String userId);
 }

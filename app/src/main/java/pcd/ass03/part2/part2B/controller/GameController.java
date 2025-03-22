@@ -55,6 +55,14 @@ public class GameController implements GridUpdateListener{
         }
     }
 
+    @Override
+    public void onGridSubmitted(String gamecode, String userId) {
+        if (gameView.isVisible() && rightGrid(gamecode)) {
+            gameView.updateGrid(user.getGridByGameCode(gamecode));
+            gameView.endGame();
+        }
+    }
+
     class BackButtonListener implements ActionListener {
         @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {

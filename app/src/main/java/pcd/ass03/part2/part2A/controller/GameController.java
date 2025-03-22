@@ -54,11 +54,8 @@ public class GameController implements GridUpdateListener{
     }
 
     @Override
-    public void onGridCompleted(int gridId, String userId) {
+    public void onGridCompleted(int gridId) {
         if (gameView.isVisible() && rightGrid(gamecode)) {
-            if (userId.equals(user.getId())) {
-                return;
-            }
             gameView.displayMessage("Congratulations! You have successfully completed the game.");
         }
     }

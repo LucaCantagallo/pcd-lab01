@@ -118,6 +118,9 @@ public class RMI implements Serializable {
         for (GridUpdateListener listener : listeners) {
             listener.onGridUpdated(gameCode);
         }
+        if(getGridByGameCode(gameCode).isCompleted()){  //se la griglia è completata notifico tutti i listener
+            notifyGridCompleted(gameCode, username);
+        }
     }
 
     public void notifyCellSelected(String gameCode, int row, int col, Color color) {
@@ -136,5 +139,11 @@ public class RMI implements Serializable {
     public void addGridUpdateListener(GridUpdateListener listener) {
         System.out.println("ci vado?");
         listeners.add(listener);
+    }
+
+    public void notifyGridCompleted(String gameCode, String userId) {
+        for (GridUpdateListener listener : listeners) {
+            listener.onGridSubmitted(gameCode, userId);
+        }
     }
 }

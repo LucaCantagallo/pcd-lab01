@@ -205,4 +205,8 @@ public class GameView extends JFrame {
     public void displayMessage(String s) {
         JOptionPane.showMessageDialog(this, s);
     }
+
+    public void endGame() {
+        JOptionPane.showMessageDialog(this, "Game completed!");
+    }
 }

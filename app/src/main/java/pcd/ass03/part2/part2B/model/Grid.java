@@ -90,6 +90,20 @@ public class Grid implements Serializable {
             return;
         }
         grid[row][col].setValue(value);
+        if(isEndGame()){
+            completed = true;
+        }
+    }
+
+    private boolean isEndGame(){
+        for(int row=0; row<9; row++){
+            for(int col=0; col<9; col++){
+                if(grid[row][col].getValue().isEmpty()){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private boolean isValidValue(int value){

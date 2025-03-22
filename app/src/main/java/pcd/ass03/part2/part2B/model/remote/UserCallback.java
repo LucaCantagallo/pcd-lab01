@@ -10,4 +10,5 @@ public interface UserCallback extends Remote {
     void onGridUpdate(String gameCode) throws RemoteException;
     void onCellSelected(String gameCode, int row, int col, Color color) throws RemoteException;
     void onCellUnselected(String gameCode, int row, int col) throws RemoteException;
+    void onGridSubmitted(String gameCode, String userId) throws RemoteException;
 }

@@ -49,7 +49,7 @@ public class GridListController implements GridUpdateListener {
     }
 
     @Override
-    public void onGridCompleted(int gridId, String userId) {
+    public void onGridCompleted(int gridId) {
         gridListView.displayGrids(user.getAllGrids(), new GridButtonListener());
     }
 

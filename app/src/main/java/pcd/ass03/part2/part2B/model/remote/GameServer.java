@@ -15,7 +15,6 @@ public interface GameServer extends Remote, Serializable {
 
     void updateGrid(String gameCode, int row, int col, int value) throws RemoteException;
 
-
     void selectCell(String gameCode, int row, int col, Color color) throws RemoteException;
 
     void unselectCell(String gameCode, int row, int col) throws RemoteException;

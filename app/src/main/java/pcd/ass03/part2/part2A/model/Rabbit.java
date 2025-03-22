@@ -97,6 +97,9 @@ public class Rabbit {
         for (GridUpdateListener listener : listeners) {
             listener.onGridUpdated(gamecode);
         }
+        if(getGridByGameCode(gamecode).isCompleted()){
+            notifyGridCompleted(getGridByGameCode(gamecode).getId());
+        }
     }
 
     private void notifyCellSelected(int gridId, int row, int col, Color color, String idUser) {
@@ -111,9 +114,9 @@ public class Rabbit {
         }
     }
 
-    private void notifyGridCompleted(int gridId, String userId) {
+    private void notifyGridCompleted(int gridId) {
         for (GridUpdateListener listener : listeners) {
-            listener.onGridCompleted(gridId, userId);
+            listener.onGridCompleted(gridId);
         }
     }
 
@@ -282,7 +285,7 @@ public class Rabbit {
             int row = Integer.parseInt(parts[1]);
             int col = Integer.parseInt(parts[2]);
             if (row == -1 && col == -1){
-                this.notifyGridCompleted(gridId, parts[3]);
+                this.notifyGridCompleted(gridId);
             } else {
                 this.notifyCellUnselect(gridId, row, col);
             }

@@ -33,4 +33,9 @@ public class UserCallbackImpl extends UnicastRemoteObject implements UserCallbac
     public void onCellUnselected(String gameCode, int row, int col) throws RemoteException {
         user.notifyCellUnselect(gameCode, row, col);
     }
+
+    @Override
+    public void onGridSubmitted(String gameCode, String userId) throws RemoteException {
+        user.notifyGridCompleted(gameCode, userId);
+    }
 }
