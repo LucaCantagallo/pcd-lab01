@@ -37,6 +37,8 @@ public class Rabbit {
 
         this.setupConnection();
 
+        // Dichiarazione degli exchange di tipo "fanout"
+        // Un exchange di tipo "fanout" distribuisce i messaggi a tutte le code collegate, indipendentemente dalla routing key
         channel.exchangeDeclare(EXCHANGE_CREATE, "fanout");
         channel.exchangeDeclare(EXCHANGE_UPDATE, "fanout");
         channel.exchangeDeclare(EXCHANGE_SELECT, "fanout");
@@ -44,30 +46,47 @@ public class Rabbit {
         channel.exchangeDeclare(EXCHANGE_REQUEST_GRID, "fanout");
         channel.exchangeDeclare(EXCHANGE_GET_GRID, "fanout");
 
+        // Creazione di una coda temporanea per gestire la creazione della griglia
         String queueName = channel.queueDeclare().getQueue();
+        // Associa la coda temporanea all'exchange EXCHANGE_CREATE per ricevere i messaggi di creazione
         channel.queueBind(queueName, EXCHANGE_CREATE, "");
+        // Consuma i messaggi dalla coda e li processa con la callback addGridCallBack()
         channel.basicConsume(queueName, true, addGridCallBack(), t -> {});
 
+        // Creazione di una coda temporanea per gestire l'aggiornamento della griglia
         String updateQueueName = channel.queueDeclare().getQueue();
+        // Associa la coda all'exchange EXCHANGE_UPDATE per ricevere i messaggi di aggiornamento
         channel.queueBind(updateQueueName, EXCHANGE_UPDATE, "");
+        // Consuma i messaggi dalla coda e li processa con la callback updateGridCallBack()
         channel.basicConsume(updateQueueName, true, updateGridCallBack(), t -> {});
 
+        // Creazione di una coda temporanea per gestire la selezione di una cella della griglia
         String selectQueueName = channel.queueDeclare().getQueue();
+        // Associa la coda all'exchange EXCHANGE_SELECT per ricevere i messaggi di selezione
         channel.queueBind(selectQueueName, EXCHANGE_SELECT, "");
+        // Consuma i messaggi dalla coda e li processa con la callback selectCellCallBack()
         channel.basicConsume(selectQueueName, true, selectCellCallBack(), t -> {});
 
+        // Creazione di una coda temporanea per gestire la deselezione di una cella della griglia
         String unselectQueueName = channel.queueDeclare().getQueue();
+        // Associa la coda all'exchange EXCHANGE_UNSELECT per ricevere i messaggi di deselezione
         channel.queueBind(unselectQueueName, EXCHANGE_UNSELECT, "");
+        // Consuma i messaggi dalla coda e li processa con la callback unselectCellCallBack()
         channel.basicConsume(unselectQueueName, true, unselectCellCallBack(), t -> {});
 
+        // Creazione di una coda temporanea per gestire le richieste di una griglia
         String receiveGridQueueName = channel.queueDeclare().getQueue();
+        // Associa la coda all'exchange EXCHANGE_REQUEST_GRID per ricevere le richieste di griglia
         channel.queueBind(receiveGridQueueName, EXCHANGE_REQUEST_GRID, "");
+        // Consuma i messaggi dalla coda e li processa con la callback requestGridCallBack()
         channel.basicConsume(receiveGridQueueName, true, requestGridCallBack(), t -> {});
 
+        // Creazione di una coda temporanea per gestire il recupero di una griglia esistente
         String getGridQueueName = channel.queueDeclare().getQueue();
+        // Associa la coda all'exchange EXCHANGE_GET_GRID per ricevere i messaggi di recupero della griglia
         channel.queueBind(getGridQueueName, EXCHANGE_GET_GRID, "");
+        // Consuma i messaggi dalla coda e li processa con la callback getGridCallBack()
         channel.basicConsume(getGridQueueName, true, getGridCallBack(), t -> {});
-
         requestGrid();
     }
 

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+// Remote interface for the user callback
 public interface UserCallback extends Remote {
     void onGridCreated() throws RemoteException;
     void onGridUpdate(String gameCode) throws RemoteException;

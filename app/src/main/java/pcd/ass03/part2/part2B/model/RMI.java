@@ -28,8 +28,17 @@ public class RMI implements Serializable {
         this.listeners = new ArrayList<>();
         this.color = Utils.convertStringToColor(Utils.generateRandomColor());
 
+
+        // Ottiene il riferimento al registro RMI (Remote Method Invocation)
+        // Il metodo getRegistry() senza parametri cerca il registro RMI sulla porta di default (1099) del localhost
         Registry registry = LocateRegistry.getRegistry();
+
+        // Effettua il lookup del servizio "GameService" registrato nel registro RMI
+        // Questo recupera un riferimento remoto all'oggetto GameServer, che può essere usato per invocare metodi remoti
         gameServer = (GameServer) registry.lookup("GameService");
+
+        // Registra una callback dell'utente presso il server
+        // L'oggetto UserCallbackImpl implementa un'interfaccia di callback che permette al server di notificare il client di eventi
         gameServer.registerCallback(new UserCallbackImpl(this));
     }
 
@@ -41,6 +50,8 @@ public class RMI implements Serializable {
         return this.username;
     }
 
+
+    //metodi per interagire con il server
 
     public void createGrid(String gameCode) {
         try {
@@ -124,7 +135,6 @@ public class RMI implements Serializable {
     }
 
     public void notifyCellSelected(String gameCode, int row, int col, Color color) {
-        System.out.println("va: " + listeners);
         for (GridUpdateListener listener : listeners) {
             listener.onCellSelected(gameCode, row, col, color);
         }
@@ -137,11 +147,15 @@ public class RMI implements Serializable {
     }
 
     public void addGridUpdateListener(GridUpdateListener listener) {
-        System.out.println("ci vado?");
         listeners.add(listener);
     }
 
-    public void notifyGridCompleted(String gameCode, String userId) {
+    public void notifyGridCompleted(String gameCode, String userId)  {
+        try {
+            gameServer.submitGrid(gameCode, userId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
         for (GridUpdateListener listener : listeners) {
             listener.onGridSubmitted(gameCode, userId);
         }

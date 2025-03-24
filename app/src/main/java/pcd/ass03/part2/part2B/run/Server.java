@@ -14,16 +14,6 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            // Creiamo un'istanza del server
-            //GameServer server = new GameServerImpl();
-//
-            //// Creiamo il registro RMI sulla porta 1099 (default)
-            //Registry registry = LocateRegistry.createRegistry(1099);
-//
-            //// Registriamo il servizio con il nome "ChatService"
-            //registry.rebind("GameServer", server);
-//
-            //System.out.println("Server RMI avviato...");
 
 
             LocateRegistry.createRegistry(1099);

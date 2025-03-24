@@ -98,5 +98,16 @@ public class GameServerImpl implements GameServer {
         return allGrids.keySet().stream().collect(Collectors.toList());
     }
 
+    @Override
+    public void submitGrid(String gameCode, String userId) throws RemoteException {
+        for (UserCallback callback : users) {
+            try {
+                callback.onGridSubmitted(gameCode, userId);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 
 }

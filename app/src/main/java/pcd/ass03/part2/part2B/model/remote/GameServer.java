@@ -7,6 +7,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+// Remote interface for the game server
 public interface GameServer extends Remote, Serializable {
 
     void registerCallback(UserCallback userCallback) throws RemoteException;
@@ -24,4 +25,6 @@ public interface GameServer extends Remote, Serializable {
     Grid getGridByGameCode(String gameCode) throws RemoteException;
 
     List<String> getGameCodeList() throws RemoteException;
+
+    void submitGrid(String gameCode, String userId) throws RemoteException;
 }
