@@ -59,6 +59,11 @@ public class SimulationActor extends AbstractActor {
         }
     }
 
+    /**
+     * Avvisare gli ascoltatori che è stato eseguito un nuovo passaggio
+     * @param t
+     * @param system
+     */
     private void notifyNewStep(int t, ActorSystem system){
         if (!isPaused) {
             timePerStep += System.currentTimeMillis() - currentWallTime;
@@ -68,10 +73,14 @@ public class SimulationActor extends AbstractActor {
             for (var l: listeners) {
                 l.notifyStepDone(t, system);
             }
+            //informo l'environment che deve eseguire un nuovo step
             getContext().actorSelection("/user/roadenv").tell(new Message("step", List.of(t)), ActorRef.noSender());
         }
     }
 
+    /**
+     * Sincronizza il tempo di simulazione con il tempo di sistema
+     */
     private void syncWithWallTime() {
         try {
             long newWallTime = System.currentTimeMillis();

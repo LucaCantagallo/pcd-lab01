@@ -47,7 +47,7 @@ public class CarAgentActor extends AbstractActor {
         this.acceleration = acc;
         this.deceleration = dec;
         this.maxSpeed = vMax;
-        getContext().actorSelection("/user/roadenv").tell(new Message("register-car", List.of(id, this, road, initialPos)), ActorRef.noSender());
+        getContext().actorSelection("/user/roadenv").tell(new Message("register-car", List.of(id, this, road, initialPos)), ActorRef.noSender()); //registriamo la macchina alla road env
         state = CarAgentState.STOPPED;
     }
 
@@ -57,7 +57,7 @@ public class CarAgentActor extends AbstractActor {
 
     private void step(int dt) {
 
-        Future<Object> future = Patterns.ask(getContext().actorSelection("/user/roadenv"), new Message("get-current-percepts", List.of(getId())), 1000);
+        Future<Object> future = Patterns.ask(getContext().actorSelection("/user/roadenv"), new Message("get-current-percepts", List.of(getId())), 1000); // chiedo informazioni alla road env su cosa mi circonda
         try {
             currentPercepts = (CarPercept) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
         } catch (TimeoutException | InterruptedException e) {
@@ -178,10 +178,8 @@ public class CarAgentActor extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(Message.class, message -> "get-id".equals(message.name()), message -> getSender().tell(getId(), getSelf()))
                 .match(Message.class, message -> "step".equals(message.name()), message -> step((Integer) message.contents().get(0)))
                 .match(Message.class, message -> "get-current-speed".equals(message.name()), message -> getSender().tell(getCurrentSpeed(), getSelf()))
-                .match(Message.class, message -> "stop".equals(message.name()), s -> getContext().stop(self()))
                 .build();
     }
 }

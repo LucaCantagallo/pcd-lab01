@@ -19,7 +19,7 @@ import java.util.concurrent.TimeoutException;
 public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 
 	public TrafficSimulationWithCrossRoads() {
-		super(4);
+		super(5);
 	}
 	
 	public void setup() {
@@ -72,6 +72,9 @@ public class TrafficSimulationWithCrossRoads extends AbstractSimulation {
 
 		system.actorOf(Props.create(CarAgentActor.class, "car-4", r2, 100.0, 0.1, 0.1, 4.0), "car-4");
 		System.out.println("creato car-4");
+
+		system.actorOf(Props.create(CarAgentActor.class, "car-5", r2, 200.0, 0.1, 0.1, 4.0), "car-5");
+		System.out.println("creato car-5");
 		
 		this.syncWithTime(25);
 	}	

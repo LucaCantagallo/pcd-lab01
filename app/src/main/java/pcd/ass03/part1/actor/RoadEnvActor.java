@@ -63,8 +63,10 @@ public class RoadEnvActor extends AbstractActor {
      */
     private void step(int dt) {
         this.dt = dt;
+        // setto nella simulation actor il tempo corrente
         getContext().actorSelection("/user/sim").tell(new Message("set-current", List.of()), ActorRef.noSender());
         if (this.actualNumStep == this.nStep) {
+            //informo la simulation actor che la simulazione è terminata
             getContext().actorSelection("/user/sim").tell(new Message("set-end", null), ActorRef.noSender());
             try {
                 Thread.sleep(1000);
@@ -104,7 +106,7 @@ public class RoadEnvActor extends AbstractActor {
 
     /**
      *
-     * Called by agent to submit an action to the environment
+     * Chiamato dall'agente per inviare un'azione all'ambiente
      *
      * @param act - the action
      */
@@ -119,8 +121,8 @@ public class RoadEnvActor extends AbstractActor {
 
     /**
      *
-     * Called at each simulation step to process the actions
-     * submitted by agents.
+     * Chiamato a ogni fase della simulazione per elaborare le azioni
+     * inviate dagli agenti.
      *
      */
     private void processActions() {
@@ -142,6 +144,7 @@ public class RoadEnvActor extends AbstractActor {
                 }
             }
         }
+        //informo la simulation actor che ho finito di processare le azioni di questo step
         getContext().actorSelection("/user/sim").tell(new Message("new-step", List.of(dt, getContext().system())), ActorRef.noSender());
     }
 
@@ -158,6 +161,13 @@ public class RoadEnvActor extends AbstractActor {
     }
 
     // no receive
+
+    /**
+     * Restituisce l'auto più vicina davanti all'auto indicata
+     * @param road
+     * @param carPos
+     * @return
+     */
     private Optional<CarAgentInfo> getNearestCarInFront(Road road, double carPos){
         return registeredCars.values()
                         .stream()
@@ -170,6 +180,13 @@ public class RoadEnvActor extends AbstractActor {
     }
 
     // no receive
+
+    /**
+     * Restituisce il semaforo più vicino davanti all'auto indicata
+     * @param road
+     * @param carPos
+     * @return
+     */
     private Optional<TrafficLightInfo> getNearestSemaphoreInFront(Road road, double carPos){
         return road.getTrafficLights()
                         .stream()

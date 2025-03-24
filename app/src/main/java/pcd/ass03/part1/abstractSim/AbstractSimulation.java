@@ -49,24 +49,28 @@ public abstract class AbstractSimulation {
      */
     public void run(int numSteps) {
 
-        system.actorSelection("/user/sim").tell(new Message("set-start", List.of(numSteps)), ActorRef.noSender());
+        //setta il numero di step nella simulation
+        system.actorSelection("/user/sim").tell(new Message("set-start", List.of(numSteps)), ActorRef.noSender()); // set the number of steps
 
         /* initialize the env and the agents inside */
         int t = t0;
 
-        system.actorSelection("/user/roadenv").tell(new Message("init", List.of(numSteps, numCars)), ActorRef.noSender());
-        for (int i = 0; i < 4; i++) {
-            system.actorSelection("/user/car-" + i).tell(new Message("init", null), ActorRef.noSender());
-        }
+        // inizializza l'ambiente (numero di step e numero di macchine)
+        system.actorSelection("/user/roadenv").tell(new Message("init", List.of(numSteps, numCars)), ActorRef.noSender()); // initialize the env
 
-        this.notifyReset(t);
+        this.notifyReset(t); // notify the listeners
 
-        /* make a step */
-        system.actorSelection("/user/roadenv").tell(new Message("step", List.of(dt)), ActorRef.noSender());
+        /* make a first step */
+        system.actorSelection("/user/roadenv").tell(new Message("step", List.of(dt)), ActorRef.noSender()); // make a step
     }
 
+    /**
+     * quanto tempo è durata la simulazione
+     * @return
+     */
     public long getSimulationDuration() {
         long dur;
+        // chiedo alla simulation actor quanto tempo è durata la simulazione
         Future<Object> future = Patterns.ask(system.actorSelection("/user/sim"), new Message("get-duration", List.of()), 1000);
         try {
             dur = (long) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
@@ -76,15 +80,19 @@ public abstract class AbstractSimulation {
         return dur;
     }
 
+    /**
+     * quanto tempo in media è durato un ciclo
+     * @return
+     */
     public long getAverageTimePerCycle() {
         long avg;
+        // chiedo alla simulation actor quanto tempo in media è durato un ciclo
         Future<Object> future = Patterns.ask(system.actorSelection("/user/sim"), new Message("get-average-time-per-cycle", List.of()), 1000);
         try {
             avg = (long) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
         } catch (TimeoutException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        system.actorSelection("/user/sim").tell(new Message("get-average-time-per-cycle", List.of()), ActorRef.noSender());
         return avg;
     }
 
@@ -106,6 +114,7 @@ public abstract class AbstractSimulation {
     }
 
     private void notifyReset(int t0) {
+        // notifica la simulazione che deve resettarsi
         system.actorSelection("/user/sim").tell(new Message("reset", List.of(t0)), ActorRef.noSender());
     }
 
@@ -114,6 +123,7 @@ public abstract class AbstractSimulation {
     }
 
     public boolean isCompleted(){
+        // chiedo alla roadenv se la simulazione è completata
         Future<Object> future = Patterns.ask(system.actorSelection("/user/roadenv"), new Message("is-completed", List.of()), 1000);
         try {
             return (boolean) Await.result(future, Duration.create(10, TimeUnit.SECONDS));
@@ -127,10 +137,12 @@ public abstract class AbstractSimulation {
     }
 
     public void pause() {
+        // chiedo alla simulation actor di mettere in pausa la simulazione
         system.actorSelection("/user/sim").tell(new Message("pause", List.of()), ActorRef.noSender());
     }
 
     public void resume() {
+        // chiedo alla simulation actor di riprendere la simulazione
         system.actorSelection("/user/sim").tell(new Message("resume", List.of(dt, system)), ActorRef.noSender());
     }
 }
