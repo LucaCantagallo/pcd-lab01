@@ -3,7 +3,6 @@ package pcd.ass03.part2.part2A.model;
 import de.sfuhrm.sudoku.Creator;
 import de.sfuhrm.sudoku.GameMatrix;
 import de.sfuhrm.sudoku.Riddle;
-import pcd.ass03.part2.common.sudoku.GameCodeDatabase;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,6 @@ package pcd.ass03.part2.part2A.controller;
 
 import pcd.ass03.part2.part2A.model.Rabbit;
 import pcd.ass03.part2.part2A.view.GameView;
-import pcd.ass03.part2.part2A.view.GridListView;
 import pcd.ass03.part2.part2A.view.StartView;
 
 import javax.swing.*;

@@ -75,6 +75,7 @@ public class Rabbit {
         return color;
     }
 
+    // Setup the connection to the RabbitMQ server
     void setupConnection() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("localhost");
@@ -86,13 +87,14 @@ public class Rabbit {
         listeners.add(listener);
     }
 
+    // Avvisa tutti gli ascoltatori che è stata creata una nuova griglia
     private void notifyGridCreated() {
-        System.out.println("notifyGridCreated");
         for (GridUpdateListener listener : listeners) {
             listener.onGridCreated();
         }
     }
 
+    // Avvisa tutti gli ascoltatori che la griglia è stata aggiornata
     private void notifyGridUpdated(String gamecode) {
         for (GridUpdateListener listener : listeners) {
             listener.onGridUpdated(gamecode);
@@ -102,18 +104,21 @@ public class Rabbit {
         }
     }
 
+    // Avvisa tutti gli ascoltatori che una cella è stata selezionata
     private void notifyCellSelected(int gridId, int row, int col, Color color, String idUser) {
         for (GridUpdateListener listener : listeners) {
             listener.onCellSelected(gridId, row, col, color, idUser);
         }
     }
 
+    // Avvisa tutti gli ascoltatori che una cella è stata deselezionata
     private void notifyCellUnselect(int gridId, int row, int col){
         for (GridUpdateListener listener : listeners) {
             listener.onCellUnselected(gridId, row, col);
         }
     }
 
+    // Avvisa tutti gli ascoltatori che la griglia è stata completata
     private void notifyGridCompleted(int gridId) {
         for (GridUpdateListener listener : listeners) {
             listener.onGridCompleted(gridId);
@@ -137,36 +142,42 @@ public class Rabbit {
         notifyGridCreated();
     }
 
+    // Invia il messaggio che è stata creata una griglia sul canale
     public void publishGrid(Grid grid) throws IOException {
         String message = grid.getId() + " " + Utils.toString(grid);
         ensureChannelIsOpen();
         channel.basicPublish(EXCHANGE_CREATE, "", null, message.getBytes(StandardCharsets.UTF_8));
     }
 
+    // Invia il messaggio che è stata aggiornata una cella sul canale
     public void updateGrid(int gridId, int row, int col, int value) throws IOException {
         String message = gridId + " " + row + " " + col + " " + value;
         ensureChannelIsOpen();
         channel.basicPublish(EXCHANGE_UPDATE, "", null, message.getBytes(StandardCharsets.UTF_8));
     }
 
+    // Invia il messaggio che è stata selezionata una cella sul canale
     public void selectCell(int gridId, int row, int col) throws IOException {
         String message = gridId + " " + row + " " + col + " " + color + " " + id;
         ensureChannelIsOpen();
         channel.basicPublish(EXCHANGE_SELECT, "", null, message.getBytes(StandardCharsets.UTF_8));
     }
 
+    // Invia il messaggio che è stata deselezionata una cella sul canale
     public void unselectCell(int gridId, int row, int col) throws IOException {
         String message = gridId + " " + row + " " + col;
         ensureChannelIsOpen();
         channel.basicPublish(EXCHANGE_UNSELECT, "", null, message.getBytes(StandardCharsets.UTF_8));
     }
 
+    //invio la richiesta di mandare le griglie
     public void requestGrid() throws IOException {
         String message = "request";
         ensureChannelIsOpen();
         channel.basicPublish(EXCHANGE_REQUEST_GRID, "", null, message.getBytes(StandardCharsets.UTF_8));
     }
 
+    //invio le griglie
     public void getGrid() throws IOException {
         String message = allGrids.stream()
                 .map(grid -> grid.getId() + " " + Utils.toString(grid)) // Converte ogni Grid in una stringa
@@ -199,8 +210,8 @@ public class Rabbit {
                 .findFirst().get();
     }
 
+    // Callback per la ricezione di messaggi di aggiornamento della griglia
     private DeliverCallback updateGridCallBack(){
-        System.out.println("updateGridCallBack");
         return (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
             String[] parts = message.split(" ");
@@ -217,8 +228,8 @@ public class Rabbit {
         };
     }
 
+    // Callback per la ricezione di messaggi di richiesta di griglia
     private DeliverCallback requestGridCallBack(){
-        System.out.println("requestGridCallBack");
         return (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
             System.out.println("ricevo richiesta");
@@ -229,8 +240,8 @@ public class Rabbit {
         };
     }
 
+    // Callback per la ricezione di messaggi di richiesta di griglia
     private DeliverCallback getGridCallBack(){
-        System.out.println("getGridCallBack");
         return (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
             System.out.println("ricevo griglie");
@@ -247,8 +258,8 @@ public class Rabbit {
         };
     }
 
+    // Callback per la ricezione di messaggi di creazione di griglia
     private DeliverCallback addGridCallBack(){
-        System.out.println("addGridCallBack");
         return (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
             Grid receivedGrid = Utils.fromString(message);
@@ -261,8 +272,8 @@ public class Rabbit {
         };
     }
 
+    // Callback per la ricezione di messaggi di selezione di cella
     private DeliverCallback selectCellCallBack(){
-        System.out.println("selectCellCallBack");
         return (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
 
@@ -276,8 +287,8 @@ public class Rabbit {
         };
     }
 
+    // Callback per la ricezione di messaggi di deselezione di cella
     private DeliverCallback unselectCellCallBack(){
-        System.out.println("unselectCellCallBack");
         return (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
             String[] parts = message.split(" ");
